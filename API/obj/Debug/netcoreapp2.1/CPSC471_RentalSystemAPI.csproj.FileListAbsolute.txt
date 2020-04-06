@@ -7,7 +7,6 @@ C:\Users\gord\Desktop\CPSC471\Project\ProjectTemp\bin\Debug\netcoreapp2.1\CPSC47
 C:\Users\gord\Desktop\CPSC471\Project\ProjectTemp\bin\Debug\netcoreapp2.1\CPSC471_RentalSystemAPI.dll
 C:\Users\gord\Desktop\CPSC471\Project\ProjectTemp\bin\Debug\netcoreapp2.1\CPSC471_RentalSystemAPI.pdb
 C:\Users\gord\Desktop\CPSC471\Project\ProjectTemp\obj\Debug\netcoreapp2.1\CPSC471_RentalSystemAPI.csprojAssemblyReference.cache
-C:\Users\gord\Desktop\CPSC471\Project\ProjectTemp\obj\Debug\netcoreapp2.1\CPSC471_RentalSystemAPI.csproj.CoreCompileInputs.cache
 C:\Users\gord\Desktop\CPSC471\Project\ProjectTemp\obj\Debug\netcoreapp2.1\CPSC471_RentalSystemAPI.RazorAssemblyInfo.cache
 C:\Users\gord\Desktop\CPSC471\Project\ProjectTemp\obj\Debug\netcoreapp2.1\CPSC471_RentalSystemAPI.RazorAssemblyInfo.cs
 C:\Users\gord\Desktop\CPSC471\Project\ProjectTemp\obj\Debug\netcoreapp2.1\CPSC471_RentalSystemAPI.AssemblyInfoInputs.cache
@@ -16,3 +15,4 @@ C:\Users\gord\Desktop\CPSC471\Project\ProjectTemp\obj\Debug\netcoreapp2.1\CPSC47
 C:\Users\gord\Desktop\CPSC471\Project\ProjectTemp\obj\Debug\netcoreapp2.1\CPSC471_RentalSystemAPI.dll
 C:\Users\gord\Desktop\CPSC471\Project\ProjectTemp\obj\Debug\netcoreapp2.1\CPSC471_RentalSystemAPI.pdb
 C:\Users\gord\Desktop\CPSC471\Project\ProjectTemp\obj\Debug\netcoreapp2.1\CPSC471_RentalSystemAPI.genruntimeconfig.cache
+C:\Users\gord\Desktop\CPSC471\Project\ProjectTemp\obj\Debug\netcoreapp2.1\CPSC471_RentalSystemAPI.csproj.CoreCompileInputs.cache

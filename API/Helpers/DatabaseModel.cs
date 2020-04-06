@@ -189,6 +189,21 @@ namespace CPSC471_RentalSystemAPI.Helpers
         }
         #endregion
 
+
+        #region Execute Queries
+
+        public DataTable listClients()
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[0];
+
+
+            return Execute_Data_Query_Store_Procedure("listClients", Parameters);
+
+
+        }
+
+        #endregion
+
         #region Examples
         public int updateEmployee(int empId,string empName, DateTime embBDate,string empAddress)
         {
@@ -217,18 +232,6 @@ namespace CPSC471_RentalSystemAPI.Helpers
 
             return Execute_Non_Query_Store_Procedure("SP_InsertEmpInfo", Parameters, "empId");
         }
-
-
-        public DataTable listClients()
-        {
-            MySqlParameter[] Parameters = new MySqlParameter[0];
-
-
-            return Execute_Data_Query_Store_Procedure("listClients", Parameters);
-
-
-        }
-
         #endregion
     }
 }
