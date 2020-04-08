@@ -98,3 +98,18 @@ END$$
 
 DELIMITER ;
 
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `updatePassword`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `updatePassword` (IN p_hash VARCHAR(45), IN u_ID int, OUT result int)
+BEGIN
+	UPDATE user 
+    SET user.password_hash = p_hash
+    WHERE user.userID = u_ID;
+    SET result = 1;
+END$$
+
+DELIMITER ;
+

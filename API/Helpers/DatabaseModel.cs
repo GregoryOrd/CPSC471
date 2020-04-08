@@ -68,7 +68,7 @@ namespace CPSC471_RentalSystemAPI.Helpers
 
 
         /// <summary>
-        /// This method is responisble to to execute a query in your RDBMS and return for you if it was successult executed. Minay used for insert,update, and delete
+        /// This method is responisble to to execute a query in your RDBMS and return for you if it was successult executed. Mainly used for insert,update, and delete
         /// </summary>
         /// <returns></returns>
         public int Execute_Non_Query_Store_Procedure(string procedureName, MySqlParameter[] parameters)

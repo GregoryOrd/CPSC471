@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using CPSC471_RentalSystemAPI.Helpers;
 using System.Web.Http;
+using MySql.Data.MySqlClient;
 
 namespace CPSC471_RentalSystemAPI.Controllers
 {
@@ -14,6 +15,8 @@ namespace CPSC471_RentalSystemAPI.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private DatabaseModel dbModel = new DatabaseModel();
+
         //All of these methods should call Authentication.checkAuthentication() before proceeding
         #region All Users Accessible
 
@@ -25,7 +28,7 @@ namespace CPSC471_RentalSystemAPI.Controllers
         {
             String user_id = parameters["user_id"].ToString();
             String old_password = parameters["password"].ToString();
-            //String new_password = parameters["new_password"].ToString();
+            String new_password = parameters["new_password"].ToString();
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(user_id), old_password, USER_TYPE.USER);
             if(authenticationResult == false)
             {
@@ -33,7 +36,23 @@ namespace CPSC471_RentalSystemAPI.Controllers
                 String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
                 return response;
             }
-            return "changePassword -- Not yet implemented.";
+            else
+            {
+                MySqlParameter[] Parameters = new MySqlParameter[3];
+                Parameters[0] = new MySqlParameter("@u_ID", user_id);
+                Parameters[1] = new MySqlParameter("@p_hash", Authentication.calculatePasswordHash(new_password));
+                Parameters[2] = new MySqlParameter("@result", 0);
+                Parameters[2].Direction = ParameterDirection.Output;
+                int result = dbModel.Execute_Non_Query_Store_Procedure("updatePassword", Parameters);
+                if(result == 1)
+                {
+                    return "Password successfully changed to: \"" + new_password + "\"";
+                }
+                else
+                {
+                    return "Error occured changing password.";
+                }
+            }         
         }
         #endregion
 
