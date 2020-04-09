@@ -70,9 +70,9 @@ CREATE TABLE `cpsc471_rental_system`.`employee` (
 CREATE TABLE `cpsc471_rental_system`.`district_manager` (
   `employeeID` INT NOT NULL,
   `district_name` VARCHAR(45) NULL,
-  PRIMARY KEY (`employeedID`),
+  PRIMARY KEY (`employeeID`),
   CONSTRAINT `FK_dstrctmngr_employeeID`
-    FOREIGN KEY (`employeedID`)
+    FOREIGN KEY (`employeeID`)
     REFERENCES `cpsc471_rental_system`.`employee` (`userID`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION);
@@ -83,7 +83,7 @@ ADD COLUMN `hiring_manager` INT AFTER `userID`;
 ALTER TABLE `cpsc471_rental_system`.`employee` 
 ADD CONSTRAINT `FK_emp_hmngrID`
   FOREIGN KEY (`hiring_manager`)
-  REFERENCES `cpsc471_rental_system`.`district_manager` (`employeedID`)
+  REFERENCES `cpsc471_rental_system`.`district_manager` (`employeeID`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
   
@@ -331,9 +331,9 @@ CREATE TABLE `cpsc471_rental_system`.`kitchen` (
   `building_name` VARCHAR(45) NOT NULL,
   `num_sinks` INT NULL,
   `counter_top_type` VARCHAR(45) NULL,
-  PRIMARY KEY (`roomnum`, `apartment_num`, `building_name`),
-  CONSTRAINT `FK_kitchen_roomnum`
-    FOREIGN KEY (`roomnum`)
+  PRIMARY KEY (`room_num`, `apartment_num`, `building_name`),
+  CONSTRAINT `FK_kitchen_room_num`
+    FOREIGN KEY (`room_num`)
     REFERENCES `cpsc471_rental_system`.`room` (`room_num`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
@@ -385,12 +385,13 @@ INSERT INTO `cpsc471_rental_system`.`client` (userId, registration_date, contrac
 INSERT INTO `cpsc471_rental_system`.`dependant` (userId, client_dependee, is_under_eighteen) VALUES (17, 15, False); -- Phyllis's husband
 INSERT INTO `cpsc471_rental_system`.`dependant` (userId, client_dependee, is_under_eighteen) VALUES (18, 13, True); -- Toby's daughter
 
-INSERT INTO `cpsc471_rental_system`.`employee` (userId, hiring_manager, hire_date, termination_date, salary, house_number, street, city, province, postal_code) VALUES (001, null, '2010-09-23', null, 45000, 69, "Rose Grove", "Scranton", "Pennsylvania", "T4Lf4L");
-INSERT INTO `cpsc471_rental_system`.`employee` (userId, hiring_manager, hire_date, termination_date, salary, house_number, street, city, province, postal_code) VALUES (002, 001, '2012-09-23', null, 35000, 69, "Spark Wood", "Scranton", "Pennsylvania", "G84-f3L");
-INSERT INTO `cpsc471_rental_system`.`employee` (userId, hiring_manager, hire_date, termination_date, salary, house_number, street, city, province, postal_code) VALUES (003, 001, '2012-09-23', null, 35000, 69, "Spark Wood", "Scranton", "Pennsylvania", "G84-f3L");
-INSERT INTO `cpsc471_rental_system`.`employee` (userId, hiring_manager, hire_date, termination_date, salary, house_number, street, city, province, postal_code) VALUES (004, 001, '2012-09-23', null, 35000, 69, "mennonite beet farm", "Scranton", "Pennsylvania", "G84-f3L");
-
+INSERT INTO `cpsc471_rental_system`.`employee` (userId, hiring_manager, hire_date, termination_date, salary, house_number, street, city, province, postal_code) VALUES (001, null, '2009-03-17', null, 45001, 69, "Jan Way", "Scranton", "Pennsylvania", "T4L-Q4L");
 INSERT INTO `cpsc471_rental_system`.`district_manager` (employeeID, district_name) VALUES (001, "Scranton Branch"); -- make Michael Scott district manager
+
+INSERT INTO `cpsc471_rental_system`.`employee` (userId, hiring_manager, hire_date, termination_date, salary, house_number, street, city, province, postal_code) VALUES (002, null, '2010-09-23', null, 45000, 69, "Rose Grove", "Scranton", "Pennsylvania", "T4Lf4L");
+INSERT INTO `cpsc471_rental_system`.`employee` (userId, hiring_manager, hire_date, termination_date, salary, house_number, street, city, province, postal_code) VALUES (003, 001, '2012-09-23', null, 35000, 69, "Spark Wood", "Scranton", "Pennsylvania", "G84-f3L");
+INSERT INTO `cpsc471_rental_system`.`employee` (userId, hiring_manager, hire_date, termination_date, salary, house_number, street, city, province, postal_code) VALUES (004, 001, '2012-09-23', null, 35000, 69, "Spark Wood", "Scranton", "Pennsylvania", "G84-f3L");
+INSERT INTO `cpsc471_rental_system`.`employee` (userId, hiring_manager, hire_date, termination_date, salary, house_number, street, city, province, postal_code) VALUES (005, 001, '2012-09-23', null, 35000, 69, "mennonite beet farm", "Scranton", "Pennsylvania", "G84-f3L");
 
 UPDATE `cpsc471_rental_system`.`employee`
 SET hiring_manager = 001 
