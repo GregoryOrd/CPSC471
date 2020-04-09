@@ -157,3 +157,42 @@ END$$
 
 DELIMITER ;
 
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `addUser`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `addUser` (IN fName VARCHAR(45), IN lName VARCHAR(45), IN pword VARCHAR(45))
+BEGIN
+	INSERT INTO user (first_name, last_name, password_hash)
+    VALUES (fName, lName, pword);
+END$$
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `getUserID`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `getUserID` (IN fName VARCHAR(45), IN lName VARCHAR(45), IN pword VARCHAR(45))
+BEGIN
+	SELECT userID FROM user 
+    WHERE first_name = fName AND last_name = lName AND password_hash = pword
+    LIMIT 1;
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `addEmployee`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `addEmployee` (IN userID int, IN man_id int, IN hire_date DATE, IN salary double, IN house_num int,
+								IN street VARCHAR(45), IN city VARCHAR(45), IN province VARCHAR(45), IN postal VARCHAR(45))
+BEGIN
+    INSERT INTO employee (userID, hiring_manager, hire_date, salary, house_number, street, city, province, postal_code)
+    VALUES (userID, man_id, hire_date, salary, house_num, street, city, province, postal);
+END$$
+
+DELIMITER ;
+

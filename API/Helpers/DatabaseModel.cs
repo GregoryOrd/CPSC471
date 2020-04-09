@@ -255,6 +255,46 @@ namespace CPSC471_RentalSystemAPI.Helpers
             return 1;
         }
 
+        //District Manager adds an Employee
+        public int addEmployee(String manager_id, String emp_FirstName, String emp_LastName, String emp_password, double emp_salary, int house_number, String street, String city, String province, String postal_code, DateTime hire_date)
+        {
+            //Add building
+            MySqlParameter[] Parameters = new MySqlParameter[3];
+            Parameters[0] = new MySqlParameter("@fName", emp_FirstName);
+            Parameters[1] = new MySqlParameter("@lName", emp_LastName);
+            Parameters[2] = new MySqlParameter("@pword", emp_password);
+            int result = Execute_Non_Query_Store_Procedure("addUser", Parameters);
+            if(result == 1)
+            {
+                DataTable userIDTable = Execute_Data_Query_Store_Procedure("getUserID", Parameters);
+                int newUserID = (int)userIDTable.Rows[0][0];
+                Parameters = new MySqlParameter[9];
+                Parameters[0] = new MySqlParameter("@userID", newUserID);
+                Parameters[1] = new MySqlParameter("@man_id", manager_id);
+                Parameters[2] = new MySqlParameter("@hire_date", hire_date);
+                Parameters[3] = new MySqlParameter("@salary", emp_salary);
+                Parameters[4] = new MySqlParameter("@house_num", house_number);
+                Parameters[5] = new MySqlParameter("@street", street);
+                Parameters[6] = new MySqlParameter("@city", city);
+                Parameters[7] = new MySqlParameter("@province", province);
+                Parameters[8] = new MySqlParameter("@postal", postal_code);
+
+                result = Execute_Non_Query_Store_Procedure("addEmployee", Parameters);
+                if(result == 1)
+                {
+                    return newUserID;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
         #endregion
 
         #region Examples

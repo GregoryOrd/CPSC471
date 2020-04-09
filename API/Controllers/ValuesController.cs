@@ -113,12 +113,26 @@ namespace CPSC471_RentalSystemAPI.Controllers
 
         #region PUT Requests
         // PUT api/districtManager/addEmployee
+        // Changed from endpoints document. Now returns a string instead of a boolean and integer.
         [Microsoft.AspNetCore.Mvc.HttpPut]
         [Microsoft.AspNetCore.Mvc.Route("districtManager/addEmployee")]
         public String addEmployee([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
             String manager_id = parameters["manager_id"].ToString();
             String password = parameters["password"].ToString();
+            String emp_FirstName = parameters["first_name"].ToString();
+            String emp_LastName = parameters["last_name"].ToString();
+            String emp_password = parameters["employee_password"].ToString();
+            double emp_salary = (double)parameters["salary"];
+            int house_number = (int)parameters["house_number"];
+            String street = parameters["street"].ToString();
+            String city = parameters["city"].ToString();
+            String province = parameters["province"].ToString();
+            String postal_code = parameters["postal_code"].ToString();
+            DateTime hire_date = (DateTime)parameters["hire_date"];
+
+            String checkInputs = "Salary: " + emp_salary + " // HouseNumber: " + house_number.ToString() + " // hire_date: " + hire_date.ToString();
+
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(manager_id), password, USER_TYPE.DISTRICT_MANAGER);
             if (authenticationResult == false)
             {
@@ -126,7 +140,18 @@ namespace CPSC471_RentalSystemAPI.Controllers
                 String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
                 return response;
             }
-            return "addEmployee -- Not yet implemented.";
+            else
+            {
+                int result = dbModel.addEmployee(manager_id, emp_FirstName, emp_LastName, emp_password, emp_salary, house_number, street, city, province, postal_code, hire_date);
+                if (result > 0)
+                {
+                    return "Success. New employee id: \"" + result + "\"";
+                }
+                else
+                {
+                    return "Error occured adding employee.";
+                }
+            }
         }
         #endregion
 
