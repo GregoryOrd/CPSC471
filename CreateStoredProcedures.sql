@@ -113,3 +113,47 @@ END$$
 
 DELIMITER ;
 
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `addBuilding`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `addBuilding` (IN bName VARCHAR(45), IN land_id int, IN prop_id int, 
+					IN city VARCHAR(45), IN prov VARCHAR(45), IN postal VARCHAR(45), 
+					IN street VARCHAR(45), OUT result int)
+BEGIN
+	INSERT INTO building 
+    VALUES (bName, land_id, prop_id, city, prov, postal, street);
+    SET result = 1;
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `addApartment`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `addApartment` (IN bName VARCHAR(45), IN aNum int, IN nFloors int, OUT result int)
+BEGIN
+	INSERT INTO apartment
+    VALUES (aNum, bName, nFloors);
+    SET result = 1;
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `addAmenity`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `addAmenity` (IN bName VARCHAR(45), IN aName VARCHAR(45), IN descrp VARCHAR(45), IN f int, OUT result int)
+BEGIN
+	INSERT INTO amenity
+    VALUES (aName, bName, descrp, f);
+    SET result = 1;
+END$$
+
+DELIMITER ;
+

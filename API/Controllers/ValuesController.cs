@@ -8,6 +8,8 @@ using Newtonsoft.Json.Linq;
 using CPSC471_RentalSystemAPI.Helpers;
 using System.Web.Http;
 using MySql.Data.MySqlClient;
+using CPSC471_RentalSystemAPI.Models;
+using Newtonsoft.Json;
 
 namespace CPSC471_RentalSystemAPI.Controllers
 {
@@ -22,6 +24,7 @@ namespace CPSC471_RentalSystemAPI.Controllers
 
         #region POST Requests
         // POST api/user/changePassword
+        // Changed from previously submitted endpoints document. Now returns string instead of boolean.
         [Microsoft.AspNetCore.Mvc.HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("user/changePassword")]
         public String changePassword([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
@@ -30,7 +33,7 @@ namespace CPSC471_RentalSystemAPI.Controllers
             String old_password = parameters["password"].ToString();
             String new_password = parameters["new_password"].ToString();
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(user_id), old_password, USER_TYPE.USER);
-            if(authenticationResult == false)
+            if (authenticationResult == false)
             {
                 HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
                 String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
@@ -38,13 +41,8 @@ namespace CPSC471_RentalSystemAPI.Controllers
             }
             else
             {
-                MySqlParameter[] Parameters = new MySqlParameter[3];
-                Parameters[0] = new MySqlParameter("@u_ID", user_id);
-                Parameters[1] = new MySqlParameter("@p_hash", Authentication.calculatePasswordHash(new_password));
-                Parameters[2] = new MySqlParameter("@result", 0);
-                Parameters[2].Direction = ParameterDirection.Output;
-                int result = dbModel.Execute_Non_Query_Store_Procedure("updatePassword", Parameters);
-                if(result == 1)
+                int result = dbModel.updatePassword(user_id, new_password);
+                if (result == 1)
                 {
                     return "Password successfully changed to: \"" + new_password + "\"";
                 }
@@ -52,7 +50,7 @@ namespace CPSC471_RentalSystemAPI.Controllers
                 {
                     return "Error occured changing password.";
                 }
-            }         
+            }
         }
         #endregion
 
@@ -62,20 +60,50 @@ namespace CPSC471_RentalSystemAPI.Controllers
 
         #region PUT Requests
         // PUT api/propertyManager/addBuilding
+        // Changed from previously submitted endpoints document. Now returns string instead of boolean.
         [Microsoft.AspNetCore.Mvc.HttpPut]
         [Microsoft.AspNetCore.Mvc.Route("propertyManager/addBuilding")]
         public String addBuilding([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
-            String employee_id = parameters["employee_id"].ToString();
+            String property_manager_id = parameters["employee_id"].ToString();
             String password = parameters["password"].ToString();
-            Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.PROPERTY_MANAGER);
+            String building_name = parameters["building_name"].ToString();
+            String landlord_id = parameters["landlord_id"].ToString();
+            String city = parameters["city"].ToString();
+            String province = parameters["province"].ToString();
+            String postal_code = parameters["postal_code"].ToString();
+            String street_address = parameters["street_address"].ToString();
+            List<Apartment> apartments = null;
+            List<Amenity> amenities = null;
+
+            JArray apartmentsArray = parameters["apartments"] as JArray;
+            if(apartmentsArray != null)
+            {
+                apartments = apartmentsArray.Select(x => new Apartment((int)x["apartment_num"], building_name, (int)x["num_floors"])).ToList();
+            }
+
+            JArray amenitiesArray = parameters["amenities"] as JArray;
+            if (amenitiesArray != null)
+            {
+                amenities = amenitiesArray.Select(x => new Amenity((String)x["name"], building_name, (String)x["description"], (int)x["fees"])).ToList();
+            }
+
+            Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(property_manager_id), password, USER_TYPE.PROPERTY_MANAGER);
             if (authenticationResult == false)
             {
                 HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
                 String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
                 return response;
             }
-            return "addBuilding -- Not yet implemented.";
+            else
+            {
+                int result = dbModel.addBuilding(building_name, landlord_id, property_manager_id, city, province, postal_code, street_address, apartments, amenities);
+                if(result == 1)
+                {
+                    return "Successfully added building: " + building_name;
+                }
+                return "Error adding building";
+            }
         }
         #endregion
 

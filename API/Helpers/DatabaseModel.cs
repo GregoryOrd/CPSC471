@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Configuration;
 using System.Data;
 using System.Web;
+using CPSC471_RentalSystemAPI.Models;
 
 namespace CPSC471_RentalSystemAPI.Helpers
 {
@@ -195,11 +196,63 @@ namespace CPSC471_RentalSystemAPI.Helpers
         public DataTable listClients()
         {
             MySqlParameter[] Parameters = new MySqlParameter[0];
-
-
             return Execute_Data_Query_Store_Procedure("listClients", Parameters);
+        }
 
+        public int updatePassword(String user_id, String new_password)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[3];
+            Parameters[0] = new MySqlParameter("@u_ID", user_id);
+            Parameters[1] = new MySqlParameter("@p_hash", Authentication.calculatePasswordHash(new_password));
+            Parameters[2] = new MySqlParameter("@result", 0);
+            Parameters[2].Direction = ParameterDirection.Output;
+            return Execute_Non_Query_Store_Procedure("updatePassword", Parameters);
+        }
 
+        public int addBuilding(String building_name, String landlord_id, String property_manager_id, String city, String province, String postal_code, String street_address, List<Apartment> apartments, List<Amenity> amenities)
+        {
+            List<int> results = new List<int>();
+
+            //Add building
+            MySqlParameter[] Parameters = new MySqlParameter[8];
+            Parameters[0] = new MySqlParameter("@bName", building_name);
+            Parameters[1] = new MySqlParameter("@land_id", landlord_id);
+            Parameters[2] = new MySqlParameter("@prop_id", property_manager_id);
+            Parameters[3] = new MySqlParameter("@city", city);
+            Parameters[4] = new MySqlParameter("@prov", province);
+            Parameters[5] = new MySqlParameter("@postal", postal_code);
+            Parameters[6] = new MySqlParameter("@street", street_address);
+            Parameters[7] = new MySqlParameter("@result", 0);
+            Parameters[7].Direction = ParameterDirection.Output;
+            results.Add(Execute_Non_Query_Store_Procedure("addBuilding", Parameters));
+
+            //Add apartments to the building
+            for(int i = 0; i < apartments.Count(); i++)
+            {
+                Parameters = new MySqlParameter[4];
+                Parameters[0] = new MySqlParameter("@bName", building_name);
+                Parameters[1] = new MySqlParameter("@aNum", apartments[i].apartment_num);
+                Parameters[2] = new MySqlParameter("@nFloors", apartments[i].num_floors);
+                Parameters[3] = new MySqlParameter("@result", 0);
+                Parameters[3].Direction = ParameterDirection.Output;
+                results.Add(Execute_Non_Query_Store_Procedure("addApartment", Parameters));
+            }
+
+            //Add amenities to the building
+            for (int i = 0; i < amenities.Count(); i++)
+            {
+                Parameters = new MySqlParameter[5];
+                Parameters[0] = new MySqlParameter("@bName", building_name);
+                Parameters[1] = new MySqlParameter("@aName", amenities[i].name);
+                Parameters[2] = new MySqlParameter("@descrp", amenities[i].description);
+                Parameters[3] = new MySqlParameter("@f", amenities[i].fees);
+                Parameters[4] = new MySqlParameter("@result", 0);
+                Parameters[4].Direction = ParameterDirection.Output;
+                results.Add(Execute_Non_Query_Store_Procedure("addAmenity", Parameters));
+            }
+
+            if (results.Contains(0)) { return 0; }
+            return 1;
         }
 
         #endregion
