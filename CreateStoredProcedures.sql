@@ -239,4 +239,16 @@ END$$
 
 DELIMITER ;
 
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `payBill`;
 
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `payBill` (IN client_id int, IN bill_id int, IN pay_type VARCHAR(45), IN pay_date DATE)
+BEGIN
+	UPDATE bill
+    SET bill.payment_type = pay_type, bill.payment_date = pay_date
+    WHERE bill.clientID = client_id AND bill.billID = bill_id;
+END$$
+
+DELIMITER ;

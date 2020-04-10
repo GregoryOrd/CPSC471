@@ -322,6 +322,17 @@ namespace CPSC471_RentalSystemAPI.Helpers
             }
             return result;
         }
+
+        public int payBill(String client_id, String bill_id, String payment_type)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[4];
+            Parameters[0] = new MySqlParameter("@client_id", client_id);
+            Parameters[1] = new MySqlParameter("@bill_id", bill_id);
+            Parameters[2] = new MySqlParameter("@pay_type", payment_type);
+            Parameters[3] = new MySqlParameter("@pay_date", DateTime.Today);
+            int result = Execute_Non_Query_Store_Procedure("payBill", Parameters);
+            return result;
+        }
         #endregion
 
         #region Examples

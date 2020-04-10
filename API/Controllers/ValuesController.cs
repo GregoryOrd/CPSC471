@@ -355,12 +355,19 @@ namespace CPSC471_RentalSystemAPI.Controllers
 
         #region POST Requests
         // POST api/client/payBill
+        // Changed from originaly endpoint document. No returns string insead of boolean. Also changed to no longer take
+        // card_number (string) as an input parameter.
+        // The context of this endpoint is that the bill, client, and credit card already exist in the database. This endpoint
+        // then updates the bill with the payment type and sets the payment date to the date when this endpoint is called.
         [Microsoft.AspNetCore.Mvc.HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("client/payBill")]
         public String payBill([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
             String client_id = parameters["client_id"].ToString();
             String password = parameters["password"].ToString();
+            String bill_id = parameters["bill_id"].ToString();
+            String payment_type = parameters["payment_type"].ToString();
+
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(client_id), password, USER_TYPE.CLIENT);
             if (authenticationResult == false)
             {
@@ -368,7 +375,18 @@ namespace CPSC471_RentalSystemAPI.Controllers
                 String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
                 return response;
             }
-            return "payBill -- Not yet implemented.";
+            else
+            {
+                int result = dbModel.payBill(client_id, bill_id, payment_type);
+                if (result > 0)
+                {
+                    return "Successfully paid bill " + bill_id;
+                }
+                else
+                {
+                    return "Error paying bill";
+                }
+            }
         }
         #endregion
 
