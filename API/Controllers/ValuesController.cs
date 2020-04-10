@@ -185,7 +185,7 @@ namespace CPSC471_RentalSystemAPI.Controllers
                 int result = dbModel.completeRequest(employee_id, request_id, building_name, tool_id, completion_date);
                 if (result > 0)
                 {
-                    return "Successfully marked request " + result + " as completed.";
+                    return "Successfully marked request " + request_id + " as completed.";
                 }
                 else
                 {
@@ -321,12 +321,15 @@ namespace CPSC471_RentalSystemAPI.Controllers
         #region PUT Requests
 
         // PUT api/client/submitRequest
+        // Changed from endpoints document. Now returns string instead of boolean and int.
         [Microsoft.AspNetCore.Mvc.HttpPut]
         [Microsoft.AspNetCore.Mvc.Route("client/submitRequest")]
         public String submitRequest([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
             String client_id = parameters["client_id"].ToString();
             String password = parameters["password"].ToString();
+            String description = parameters["description"].ToString();
+
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(client_id), password, USER_TYPE.CLIENT);
             if (authenticationResult == false)
             {
@@ -334,7 +337,18 @@ namespace CPSC471_RentalSystemAPI.Controllers
                 String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
                 return response;
             }
-            return "submitRequest -- Not yet implemented.";
+            else
+            {
+                int result = dbModel.submitRequest(client_id, description);
+                if (result > 0)
+                {
+                    return "Successfully submitted the request. The request id is: " + result;
+                }
+                else
+                {
+                    return "Error submitting request.";
+                }
+            }
         }
 
         #endregion

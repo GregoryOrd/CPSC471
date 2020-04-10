@@ -210,3 +210,33 @@ END$$
 
 DELIMITER ;
 
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `submitRequest`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `submitRequest` (IN client_id int, IN descript VARCHAR(45))
+BEGIN
+	INSERT INTO request (clientID, description)
+    VALUES (client_id, descript);
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `getRequestID`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `getRequestID` (IN client_id int, IN descript VARCHAR(45))
+BEGIN
+	SELECT requestID
+    FROM request
+    WHERE request.clientID = client_id AND request.description = descript
+    ORDER BY requestID desc
+    LIMIT 1;
+END$$
+
+DELIMITER ;
+
+

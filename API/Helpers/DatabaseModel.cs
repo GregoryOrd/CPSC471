@@ -307,6 +307,21 @@ namespace CPSC471_RentalSystemAPI.Helpers
             return result;
         }
 
+
+        public int submitRequest(String client_id, String description)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[2];
+            Parameters[0] = new MySqlParameter("@client_id", client_id);
+            Parameters[1] = new MySqlParameter("@descript", description);
+            int result = Execute_Non_Query_Store_Procedure("submitRequest", Parameters);
+            if(result == 1)
+            {
+                DataTable requestIDTable = Execute_Data_Query_Store_Procedure("getRequestID", Parameters);
+                int requestID = (int)requestIDTable.Rows[0][0];
+                return requestID;
+            }
+            return result;
+        }
         #endregion
 
         #region Examples
