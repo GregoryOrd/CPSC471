@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Configuration;
 using System.Data;
 using System.Web;
+using CPSC471_RentalSystemAPI.Models;
 
 namespace CPSC471_RentalSystemAPI.Helpers
 {
@@ -195,42 +196,142 @@ namespace CPSC471_RentalSystemAPI.Helpers
         public DataTable listClients()
         {
             MySqlParameter[] Parameters = new MySqlParameter[0];
-
-
             return Execute_Data_Query_Store_Procedure("listClients", Parameters);
-
-
         }
 
-        #endregion
-
-        #region Examples
-        public int updateEmployee(int empId,string empName, DateTime embBDate,string empAddress)
-        {
-
-
-            MySqlParameter[] Parameters = new MySqlParameter[4]; // Specifc number of parametrs for this tored procedure. 
-            Parameters[0] = new MySqlParameter("@empName", empName);//Make sure parameters name matches thenames given in your stored procedure
-            Parameters[1] = new MySqlParameter("@embBDate", embBDate);
-            Parameters[2] = new MySqlParameter("@empAddress", empAddress);
-            Parameters[3] = new MySqlParameter("@empId", empId);
-
-            return Execute_Non_Query_Store_Procedure("SP_UpdateEmpInfo", Parameters);//Make sure procedure name matches the name given in your RDBMS
-        }
-
-
-        public int insertEmployee( string empName, DateTime embBDate, string empAddress)
+        public int updatePassword(String user_id, String new_password)
         {
             MySqlParameter[] Parameters = new MySqlParameter[3];
-            Parameters[0] = new MySqlParameter("@empName", empName);
-            Parameters[1] = new MySqlParameter("@embBDate", embBDate);
-            Parameters[2] = new MySqlParameter("@empAddress", empAddress);
-
-            Parameters[2] = new MySqlParameter("@empId", SqlDbType.Int);
+            Parameters[0] = new MySqlParameter("@u_ID", user_id);
+            Parameters[1] = new MySqlParameter("@p_hash", Authentication.calculatePasswordHash(new_password));
+            Parameters[2] = new MySqlParameter("@result", 0);
             Parameters[2].Direction = ParameterDirection.Output;
+            return Execute_Non_Query_Store_Procedure("updatePassword", Parameters);
+        }
+
+        public int addBuilding(String building_name, String landlord_id, String property_manager_id, String city, String province, String postal_code, String street_address, List<Apartment> apartments, List<Amenity> amenities)
+        {
+            List<int> results = new List<int>();
+
+            //Add building
+            MySqlParameter[] Parameters = new MySqlParameter[8];
+            Parameters[0] = new MySqlParameter("@bName", building_name);
+            Parameters[1] = new MySqlParameter("@land_id", landlord_id);
+            Parameters[2] = new MySqlParameter("@prop_id", property_manager_id);
+            Parameters[3] = new MySqlParameter("@city", city);
+            Parameters[4] = new MySqlParameter("@prov", province);
+            Parameters[5] = new MySqlParameter("@postal", postal_code);
+            Parameters[6] = new MySqlParameter("@street", street_address);
+            Parameters[7] = new MySqlParameter("@result", 0);
+            Parameters[7].Direction = ParameterDirection.Output;
+            results.Add(Execute_Non_Query_Store_Procedure("addBuilding", Parameters));
+
+            //Add apartments to the building
+            for(int i = 0; i < apartments.Count(); i++)
+            {
+                Parameters = new MySqlParameter[4];
+                Parameters[0] = new MySqlParameter("@bName", building_name);
+                Parameters[1] = new MySqlParameter("@aNum", apartments[i].apartment_num);
+                Parameters[2] = new MySqlParameter("@nFloors", apartments[i].num_floors);
+                Parameters[3] = new MySqlParameter("@result", 0);
+                Parameters[3].Direction = ParameterDirection.Output;
+                results.Add(Execute_Non_Query_Store_Procedure("addApartment", Parameters));
+            }
+
+            //Add amenities to the building
+            for (int i = 0; i < amenities.Count(); i++)
+            {
+                Parameters = new MySqlParameter[5];
+                Parameters[0] = new MySqlParameter("@bName", building_name);
+                Parameters[1] = new MySqlParameter("@aName", amenities[i].name);
+                Parameters[2] = new MySqlParameter("@descrp", amenities[i].description);
+                Parameters[3] = new MySqlParameter("@f", amenities[i].fees);
+                Parameters[4] = new MySqlParameter("@result", 0);
+                Parameters[4].Direction = ParameterDirection.Output;
+                results.Add(Execute_Non_Query_Store_Procedure("addAmenity", Parameters));
+            }
+
+            if (results.Contains(0)) { return 0; }
+            return 1;
+        }
+
+        //District Manager adds an Employee
+        public int addEmployee(String manager_id, String emp_FirstName, String emp_LastName, String emp_password, double emp_salary, int house_number, String street, String city, String province, String postal_code, DateTime hire_date)
+        {
+            //Add building
+            MySqlParameter[] Parameters = new MySqlParameter[3];
+            Parameters[0] = new MySqlParameter("@fName", emp_FirstName);
+            Parameters[1] = new MySqlParameter("@lName", emp_LastName);
+            Parameters[2] = new MySqlParameter("@pword", emp_password);
+            int result = Execute_Non_Query_Store_Procedure("addUser", Parameters);
+            if(result == 1)
+            {
+                DataTable userIDTable = Execute_Data_Query_Store_Procedure("getUserID", Parameters);
+                int newUserID = (int)userIDTable.Rows[0][0];
+                Parameters = new MySqlParameter[9];
+                Parameters[0] = new MySqlParameter("@userID", newUserID);
+                Parameters[1] = new MySqlParameter("@man_id", manager_id);
+                Parameters[2] = new MySqlParameter("@hire_date", hire_date);
+                Parameters[3] = new MySqlParameter("@salary", emp_salary);
+                Parameters[4] = new MySqlParameter("@house_num", house_number);
+                Parameters[5] = new MySqlParameter("@street", street);
+                Parameters[6] = new MySqlParameter("@city", city);
+                Parameters[7] = new MySqlParameter("@province", province);
+                Parameters[8] = new MySqlParameter("@postal", postal_code);
+
+                result = Execute_Non_Query_Store_Procedure("addEmployee", Parameters);
+                if(result == 1)
+                {
+                    return newUserID;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        public int completeRequest(String employee_id, String request_id, String building_name, String tool_id, DateTime completion_date)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[5];
+            Parameters[0] = new MySqlParameter("@employee_id", employee_id);
+            Parameters[1] = new MySqlParameter("@request_id", request_id);
+            Parameters[2] = new MySqlParameter("@building_name", building_name);
+            Parameters[3] = new MySqlParameter("@tool_id", tool_id);
+            Parameters[4] = new MySqlParameter("@completion_date", completion_date);
+            int result = Execute_Non_Query_Store_Procedure("completeRequest", Parameters);
+            return result;
+        }
 
 
-            return Execute_Non_Query_Store_Procedure("SP_InsertEmpInfo", Parameters, "empId");
+        public int submitRequest(String client_id, String description)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[2];
+            Parameters[0] = new MySqlParameter("@client_id", client_id);
+            Parameters[1] = new MySqlParameter("@descript", description);
+            int result = Execute_Non_Query_Store_Procedure("submitRequest", Parameters);
+            if(result == 1)
+            {
+                DataTable requestIDTable = Execute_Data_Query_Store_Procedure("getRequestID", Parameters);
+                int requestID = (int)requestIDTable.Rows[0][0];
+                return requestID;
+            }
+            return result;
+        }
+
+        public int payBill(String client_id, String bill_id, String payment_type)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[4];
+            Parameters[0] = new MySqlParameter("@client_id", client_id);
+            Parameters[1] = new MySqlParameter("@bill_id", bill_id);
+            Parameters[2] = new MySqlParameter("@pay_type", payment_type);
+            Parameters[3] = new MySqlParameter("@pay_date", DateTime.Today);
+            int result = Execute_Non_Query_Store_Procedure("payBill", Parameters);
+            return result;
         }
         #endregion
     }

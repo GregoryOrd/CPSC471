@@ -28,39 +28,43 @@ namespace CPSC471_RentalSystemAPI.Helpers
             Parameters[0] = new MySqlParameter("@u_ID", userID);
             Parameters[1] = new MySqlParameter("@p_hash", calculatedHash);
 
-            //Query DB using userID to find the stored hash and userType based on userID
-            //If the hashes and userTypes match return true, otherwise return false.
-            switch (userType)
+            try
             {
-                case USER_TYPE.USER:
-                    DataTable users = dbModel.Execute_Data_Query_Store_Procedure("getUsers", Parameters);
-                    if (users.Rows.Count == 1) return true;
-                    break;
+                switch (userType)
+                {
+                    case USER_TYPE.USER:
+                        DataTable users = dbModel.Execute_Data_Query_Store_Procedure("getUsers", Parameters);
+                        if (users.Rows.Count == 1) return true;
+                        break;
 
-                case USER_TYPE.PROPERTY_MANAGER:
-                    DataTable propertyManagers = dbModel.Execute_Data_Query_Store_Procedure("getPropertyManagers", Parameters);
-                    if (propertyManagers.Rows.Count == 1) return true;
-                    break;
+                    case USER_TYPE.PROPERTY_MANAGER:
+                        DataTable propertyManagers = dbModel.Execute_Data_Query_Store_Procedure("getPropertyManagers", Parameters);
+                        if (propertyManagers.Rows.Count == 1) return true;
+                        break;
 
-                case USER_TYPE.DISTRICT_MANAGER:
-                    DataTable districtManagers = dbModel.Execute_Data_Query_Store_Procedure("getDistrictManagers", Parameters);
-                    if (districtManagers.Rows.Count == 1) return true;
-                    break;
+                    case USER_TYPE.DISTRICT_MANAGER:
+                        DataTable districtManagers = dbModel.Execute_Data_Query_Store_Procedure("getDistrictManagers", Parameters);
+                        if (districtManagers.Rows.Count == 1) return true;
+                        break;
 
-                case USER_TYPE.TECHNICIAN:
-                    DataTable technicians = dbModel.Execute_Data_Query_Store_Procedure("getTechnicians", Parameters);
-                    if (technicians.Rows.Count == 1) return true;
-                    break;
+                    case USER_TYPE.TECHNICIAN:
+                        DataTable technicians = dbModel.Execute_Data_Query_Store_Procedure("getTechnicians", Parameters);
+                        if (technicians.Rows.Count == 1) return true;
+                        break;
 
-                case USER_TYPE.LANDLORD:
-                    DataTable landlords = dbModel.Execute_Data_Query_Store_Procedure("getLandlords", Parameters);
-                    if (landlords.Rows.Count == 1) return true;
-                    break;
+                    case USER_TYPE.LANDLORD:
+                        DataTable landlords = dbModel.Execute_Data_Query_Store_Procedure("getLandlords", Parameters);
+                        if (landlords.Rows.Count == 1) return true;
+                        break;
 
-                case USER_TYPE.CLIENT:
-                    DataTable clients = dbModel.Execute_Data_Query_Store_Procedure("getClients", Parameters);
-                    if (clients.Rows.Count == 1) return true;
-                    break;
+                    case USER_TYPE.CLIENT:
+                        DataTable clients = dbModel.Execute_Data_Query_Store_Procedure("getClients", Parameters);
+                        if (clients.Rows.Count == 1) return true;
+                        break;
+                }
+            }catch(Exception e)
+            {
+                return false;
             }
             return false;
         }

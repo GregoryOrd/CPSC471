@@ -113,3 +113,142 @@ END$$
 
 DELIMITER ;
 
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `addBuilding`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `addBuilding` (IN bName VARCHAR(45), IN land_id int, IN prop_id int, 
+					IN city VARCHAR(45), IN prov VARCHAR(45), IN postal VARCHAR(45), 
+					IN street VARCHAR(45), OUT result int)
+BEGIN
+	INSERT INTO building 
+    VALUES (bName, land_id, prop_id, city, prov, postal, street);
+    SET result = 1;
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `addApartment`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `addApartment` (IN bName VARCHAR(45), IN aNum int, IN nFloors int, OUT result int)
+BEGIN
+	INSERT INTO apartment
+    VALUES (aNum, bName, nFloors);
+    SET result = 1;
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `addAmenity`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `addAmenity` (IN bName VARCHAR(45), IN aName VARCHAR(45), IN descrp VARCHAR(45), IN f int, OUT result int)
+BEGIN
+	INSERT INTO amenity
+    VALUES (aName, bName, descrp, f);
+    SET result = 1;
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `addUser`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `addUser` (IN fName VARCHAR(45), IN lName VARCHAR(45), IN pword VARCHAR(45))
+BEGIN
+	INSERT INTO user (first_name, last_name, password_hash)
+    VALUES (fName, lName, pword);
+END$$
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `getUserID`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `getUserID` (IN fName VARCHAR(45), IN lName VARCHAR(45), IN pword VARCHAR(45))
+BEGIN
+	SELECT userID FROM user 
+    WHERE first_name = fName AND last_name = lName AND password_hash = pword
+    LIMIT 1;
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `addEmployee`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `addEmployee` (IN userID int, IN man_id int, IN hire_date DATE, IN salary double, IN house_num int,
+								IN street VARCHAR(45), IN city VARCHAR(45), IN province VARCHAR(45), IN postal VARCHAR(45))
+BEGIN
+    INSERT INTO employee (userID, hiring_manager, hire_date, salary, house_number, street, city, province, postal_code)
+    VALUES (userID, man_id, hire_date, salary, house_num, street, city, province, postal);
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `completeRequest`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `completeRequest` (IN employee_id int, IN request_id int, IN building_name VARCHAR(45),
+									IN tool_id int, IN completion_date DATE)
+BEGIN
+	INSERT INTO service
+    VALUES (tool_id, building_name, employee_id, request_id, completion_date);
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `submitRequest`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `submitRequest` (IN client_id int, IN descript VARCHAR(45))
+BEGIN
+	INSERT INTO request (clientID, description)
+    VALUES (client_id, descript);
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `getRequestID`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `getRequestID` (IN client_id int, IN descript VARCHAR(45))
+BEGIN
+	SELECT requestID
+    FROM request
+    WHERE request.clientID = client_id AND request.description = descript
+    ORDER BY requestID desc
+    LIMIT 1;
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `payBill`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `payBill` (IN client_id int, IN bill_id int, IN pay_type VARCHAR(45), IN pay_date DATE)
+BEGIN
+	UPDATE bill
+    SET bill.payment_type = pay_type, bill.payment_date = pay_date
+    WHERE bill.clientID = client_id AND bill.billID = bill_id;
+END$$
+
+DELIMITER ;

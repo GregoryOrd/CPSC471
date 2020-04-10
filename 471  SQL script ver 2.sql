@@ -100,7 +100,7 @@ CREATE TABLE `cpsc471_rental_system`.`bill` (
     ON UPDATE NO ACTION);
     
 CREATE TABLE `cpsc471_rental_system`.`request` (
-  `requestID` INT NOT NULL,
+  `requestID` INT NOT NULL AUTO_INCREMENT,
   `clientID` INT NULL,
   `description` VARCHAR(45) NULL,
   PRIMARY KEY (`requestID`),
