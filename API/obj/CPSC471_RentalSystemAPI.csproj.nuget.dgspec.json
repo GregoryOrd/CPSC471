@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\gord\\Desktop\\CPSC471\\Project\\ProjectTemp\\CPSC471_RentalSystemAPI.csproj": {}
+    "C:\\Users\\matta\\Documents\\GitHub\\CPSC471\\API\\CPSC471_RentalSystemAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\gord\\Desktop\\CPSC471\\Project\\ProjectTemp\\CPSC471_RentalSystemAPI.csproj": {
+    "C:\\Users\\matta\\Documents\\GitHub\\CPSC471\\API\\CPSC471_RentalSystemAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\gord\\Desktop\\CPSC471\\Project\\ProjectTemp\\CPSC471_RentalSystemAPI.csproj",
+        "projectUniqueName": "C:\\Users\\matta\\Documents\\GitHub\\CPSC471\\API\\CPSC471_RentalSystemAPI.csproj",
         "projectName": "CPSC471_RentalSystemAPI",
-        "projectPath": "C:\\Users\\gord\\Desktop\\CPSC471\\Project\\ProjectTemp\\CPSC471_RentalSystemAPI.csproj",
-        "packagesPath": "C:\\Users\\gord\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\gord\\Desktop\\CPSC471\\Project\\ProjectTemp\\obj\\",
+        "projectPath": "C:\\Users\\matta\\Documents\\GitHub\\CPSC471\\API\\CPSC471_RentalSystemAPI.csproj",
+        "packagesPath": "C:\\Users\\matta\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\matta\\Documents\\GitHub\\CPSC471\\API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\gord\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\matta\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

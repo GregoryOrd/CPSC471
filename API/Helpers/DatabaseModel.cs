@@ -21,7 +21,7 @@ namespace CPSC471_RentalSystemAPI.Helpers
         {
             try
             {
-                return "Server=localhost;Port=3306;Database=cpsc471_rental_system;Uid=root;Pwd=;";
+                return "Server=localhost;Port=3306;Database=cpsc471_rental_system;Uid=root;Pwd=&_perbanana&MUlator69;";
             }
             catch { return null; }
         }
