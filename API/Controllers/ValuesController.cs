@@ -204,18 +204,51 @@ namespace CPSC471_RentalSystemAPI.Controllers
         // PUT api/landlord/addClient
         [Microsoft.AspNetCore.Mvc.HttpPut]
         [Microsoft.AspNetCore.Mvc.Route("landlord/addClient")]
-        public String addClient([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
+        public JObject addClient([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
-            String employee_id = parameters["employee_id"].ToString();
-            String password = parameters["password"].ToString();
+            String employee_id          = parameters["employee_id"].ToString();
+            String password             = parameters["password"].ToString();
+            String first_name           = parameters["first_name"].ToString();
+            String last_name            = parameters["last_name"].ToString();
+            String client_password      = parameters["client_password"].ToString();
+            String contract_type        = parameters["contract_type"].ToString();
+            String card_number          = parameters["card_number"].ToString();
+            int apartment_num           = (int) parameters["apartment_num"];
+            String building_name        = parameters["building_name"].ToString();
+            DateTime start_date         = (DateTime) parameters["start_date"];
+            DateTime end_date         = (DateTime) parameters["end_date"];
+            List<Dependent> dependents  = new List<Dependent>();
+            foreach (JObject d in parameters["dependents"])
+            {
+                dependents.Add(new Dependent((bool) d["is_under_18"], d["first_name"].ToString(),
+                    d["last_name"].ToString(), d["password"].ToString()));
+            }
+
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
+            JObject retVal = new JObject();
             if (authenticationResult == false)
             {
                 HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
                 String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
-                return response;
+                retVal["success"] = false;
+                return retVal;
             }
-            return "addClient -- Not yet implemented.";
+            else
+            {
+                int result = dbModel.addClient(first_name, last_name, client_password, contract_type, card_number,
+                    dependents.ToArray(), apartment_num, building_name, start_date, end_date);
+                retVal["user_id"] = result;
+                if (result > 0)
+                {
+                    retVal["success"] = true;
+                    return retVal;
+                }
+                else
+                {
+                    retVal["success"] = false;
+                    return retVal;
+                }
+            }
         }
 
         #endregion

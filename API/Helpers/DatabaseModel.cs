@@ -8,6 +8,7 @@ using System.Configuration;
 using System.Data;
 using System.Web;
 using CPSC471_RentalSystemAPI.Models;
+using System.Transactions;
 
 namespace CPSC471_RentalSystemAPI.Helpers
 {
@@ -92,6 +93,7 @@ namespace CPSC471_RentalSystemAPI.Helpers
             catch (Exception ex)
             {
                 string s = ex.Message;
+                Console.WriteLine("\n\nERROR\n" + s + "\n");
                 successfulQuery = -2;
             }
 
@@ -333,6 +335,59 @@ namespace CPSC471_RentalSystemAPI.Helpers
             int result = Execute_Non_Query_Store_Procedure("payBill", Parameters);
             return result;
         }
+
+        public int addClient(String first_name, String last_name, String password, String contract_type, String card_number,
+            Dependent[] dependents, int apartment_num, String building_name, DateTime start_date, DateTime end_date)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[3];
+            Parameters[0] = new MySqlParameter("@fName", first_name);
+            Parameters[1] = new MySqlParameter("@lName", last_name);
+            Parameters[2] = new MySqlParameter("@pword", password);
+            int result = Execute_Non_Query_Store_Procedure("addUser", Parameters);
+            if (result != 1) return -1;
+
+            DataTable userIDTable = Execute_Data_Query_Store_Procedure("getUserID", Parameters);
+            int client_id = (int)userIDTable.Rows[0][0];
+            Parameters = new MySqlParameter[3];
+            Parameters[0] = new MySqlParameter("@uid", client_id);
+            Parameters[1] = new MySqlParameter("@regDate", start_date);
+            Parameters[2] = new MySqlParameter("@contract", contract_type);
+            result = Execute_Non_Query_Store_Procedure("addClient", Parameters);
+            if (result != 1) return -1;
+
+            Parameters = new MySqlParameter[5];
+            Parameters[0] = new MySqlParameter("@uid", client_id);
+            Parameters[1] = new MySqlParameter("@anum", apartment_num);
+            Parameters[2] = new MySqlParameter("@bname", building_name);
+            Parameters[3] = new MySqlParameter("@sdate", start_date);
+            Parameters[4] = new MySqlParameter("@edate", end_date);
+            result = Execute_Non_Query_Store_Procedure("setRents", Parameters);
+            if (result != 1) return -1;
+
+            foreach (Dependent d in dependents)
+            {
+                Parameters = new MySqlParameter[3];
+                Parameters[0] = new MySqlParameter("@fName", d.first_name);
+                Parameters[1] = new MySqlParameter("@lName", d.last_name);
+                Parameters[2] = new MySqlParameter("@pword", d.password_hash);
+                result = Execute_Non_Query_Store_Procedure("addUser", Parameters);
+                if (result != 1) return -1;
+
+                userIDTable = Execute_Data_Query_Store_Procedure("getUserID", Parameters);
+                int  dep_id= (int) userIDTable.Rows[0][0];
+
+                Parameters = new MySqlParameter[3];
+                Parameters[0] = new MySqlParameter("@uid", dep_id);
+                Parameters[1] = new MySqlParameter("@cid", client_id);
+                Parameters[2] = new MySqlParameter("@u18", d.is_under_18);
+                result = Execute_Non_Query_Store_Procedure("addDependant", Parameters);
+                if (result != 1) return -1;
+            }
+
+            return client_id;
+        }
+
         #endregion
     }
 }
+// Parameters[0] = new MySqlParameter("@", );
