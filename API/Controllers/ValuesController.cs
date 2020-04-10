@@ -391,34 +391,5 @@ namespace CPSC471_RentalSystemAPI.Controllers
         #endregion
 
         #endregion
-
-        #region Professor's Examples
-        // GET api/ValuesController/GetValuesById?id=5
-        [Microsoft.AspNetCore.Mvc.HttpGet]
-        [Microsoft.AspNetCore.Mvc.Route("GetValuesById")]
-        public ActionResult<IEnumerable<string>> GetValuesById(int id)
-        {
-            return new string[] { "value1" };
-        }
-
-        // PUT api/ValuesController/InsertEmployee
-        [Microsoft.AspNetCore.Mvc.HttpPut]
-        [Microsoft.AspNetCore.Mvc.Route("InsertEmployee")]
-        public void InsertEmployee([Microsoft.AspNetCore.Mvc.FromBodyAttribute] JObject emp)
-        {
-            string empName = (string)emp["empName"];
-            string empBdate = (string)emp["empBdate"];
-        }
-
-        // PUT api/ValuesController/UpdateEmployee
-        [Microsoft.AspNetCore.Mvc.HttpPost]
-        [Microsoft.AspNetCore.Mvc.Route("UpdateEmployee")]
-        public void UpdateEmployee([Microsoft.AspNetCore.Mvc.FromBodyAttribute] JObject emp)
-        {
-            int empId = (int)emp["empId"];
-            string empName = (string)emp["empName"];
-            string empBdate = (string)emp["empBdate"];
-        }
-        #endregion
     }
 }

@@ -334,35 +334,5 @@ namespace CPSC471_RentalSystemAPI.Helpers
             return result;
         }
         #endregion
-
-        #region Examples
-        public int updateEmployee(int empId,string empName, DateTime embBDate,string empAddress)
-        {
-
-
-            MySqlParameter[] Parameters = new MySqlParameter[4]; // Specifc number of parametrs for this tored procedure. 
-            Parameters[0] = new MySqlParameter("@empName", empName);//Make sure parameters name matches thenames given in your stored procedure
-            Parameters[1] = new MySqlParameter("@embBDate", embBDate);
-            Parameters[2] = new MySqlParameter("@empAddress", empAddress);
-            Parameters[3] = new MySqlParameter("@empId", empId);
-
-            return Execute_Non_Query_Store_Procedure("SP_UpdateEmpInfo", Parameters);//Make sure procedure name matches the name given in your RDBMS
-        }
-
-
-        public int insertEmployee( string empName, DateTime embBDate, string empAddress)
-        {
-            MySqlParameter[] Parameters = new MySqlParameter[3];
-            Parameters[0] = new MySqlParameter("@empName", empName);
-            Parameters[1] = new MySqlParameter("@embBDate", embBDate);
-            Parameters[2] = new MySqlParameter("@empAddress", empAddress);
-
-            Parameters[2] = new MySqlParameter("@empId", SqlDbType.Int);
-            Parameters[2].Direction = ParameterDirection.Output;
-
-
-            return Execute_Non_Query_Store_Procedure("SP_InsertEmpInfo", Parameters, "empId");
-        }
-        #endregion
     }
 }
