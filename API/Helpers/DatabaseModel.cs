@@ -295,6 +295,18 @@ namespace CPSC471_RentalSystemAPI.Helpers
             }
         }
 
+        public int completeRequest(String employee_id, String request_id, String building_name, String tool_id, DateTime completion_date)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[5];
+            Parameters[0] = new MySqlParameter("@employee_id", employee_id);
+            Parameters[1] = new MySqlParameter("@request_id", request_id);
+            Parameters[2] = new MySqlParameter("@building_name", building_name);
+            Parameters[3] = new MySqlParameter("@tool_id", tool_id);
+            Parameters[4] = new MySqlParameter("@completion_date", completion_date);
+            int result = Execute_Non_Query_Store_Procedure("completeRequest", Parameters);
+            return result;
+        }
+
         #endregion
 
         #region Examples

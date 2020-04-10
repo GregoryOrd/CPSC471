@@ -196,3 +196,17 @@ END$$
 
 DELIMITER ;
 
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `completeRequest`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `completeRequest` (IN employee_id int, IN request_id int, IN building_name VARCHAR(45),
+									IN tool_id int, IN completion_date DATE)
+BEGIN
+	INSERT INTO service
+    VALUES (tool_id, building_name, employee_id, request_id, completion_date);
+END$$
+
+DELIMITER ;
+

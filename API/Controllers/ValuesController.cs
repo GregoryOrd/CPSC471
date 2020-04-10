@@ -161,12 +161,18 @@ namespace CPSC471_RentalSystemAPI.Controllers
 
         #region POST Requests
         // POST api/technician/completeRequest
+        // Changed from original endpoints document. Now returns a string instead of a boolean.
         [Microsoft.AspNetCore.Mvc.HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("technician/completeRequest")]
         public String completeRequest([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
             String employee_id = parameters["employee_id"].ToString();
             String password = parameters["password"].ToString();
+            String request_id = parameters["request_id"].ToString();
+            String building_name = parameters["building_name"].ToString();
+            String tool_id = parameters["tool_id"].ToString();
+            DateTime completion_date = (DateTime)parameters["completion_date"];
+
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.TECHNICIAN);
             if (authenticationResult == false)
             {
@@ -174,7 +180,18 @@ namespace CPSC471_RentalSystemAPI.Controllers
                 String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
                 return response;
             }
-            return "completeRequest -- Not yet implemented.";
+            else
+            {
+                int result = dbModel.completeRequest(employee_id, request_id, building_name, tool_id, completion_date);
+                if (result > 0)
+                {
+                    return "Successfully marked request " + result + " as completed.";
+                }
+                else
+                {
+                    return "Error marking request as completed.";
+                }
+            }
         }
         #endregion
 
