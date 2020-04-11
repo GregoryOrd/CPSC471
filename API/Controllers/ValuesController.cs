@@ -27,28 +27,30 @@ namespace CPSC471_RentalSystemAPI.Controllers
         // Changed from previously submitted endpoints document. Now returns string instead of boolean.
         [Microsoft.AspNetCore.Mvc.HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("user/changePassword")]
-        public String changePassword([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
+        public IActionResult changePassword([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            JObject retVal = new JObject();
             String user_id = parameters["user_id"].ToString();
             String old_password = parameters["password"].ToString();
             String new_password = parameters["new_password"].ToString();
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(user_id), old_password, USER_TYPE.USER);
             if (authenticationResult == false)
             {
-                HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
-                String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
-                return response;
+                retVal["success"] = false;
+                return StatusCode(401, retVal);
             }
             else
             {
                 int result = dbModel.updatePassword(user_id, new_password);
                 if (result == 1)
                 {
-                    return "Password successfully changed to: \"" + new_password + "\"";
+                    retVal["success"] = true;
+                    return StatusCode(200, retVal);
                 }
                 else
                 {
-                    return "Error occured changing password.";
+                    retVal["success"] = false;
+                    return StatusCode(500, retVal);
                 }
             }
         }
@@ -63,8 +65,9 @@ namespace CPSC471_RentalSystemAPI.Controllers
         // Changed from previously submitted endpoints document. Now returns string instead of boolean.
         [Microsoft.AspNetCore.Mvc.HttpPut]
         [Microsoft.AspNetCore.Mvc.Route("propertyManager/addBuilding")]
-        public String addBuilding([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
+        public IActionResult addBuilding([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            JObject retVal = new JObject();
             String property_manager_id = parameters["employee_id"].ToString();
             String password = parameters["password"].ToString();
             String building_name = parameters["building_name"].ToString();
@@ -91,18 +94,19 @@ namespace CPSC471_RentalSystemAPI.Controllers
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(property_manager_id), password, USER_TYPE.PROPERTY_MANAGER);
             if (authenticationResult == false)
             {
-                HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
-                String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
-                return response;
+                retVal["success"] = false;
+                return StatusCode(401, retVal);
             }
             else
             {
                 int result = dbModel.addBuilding(building_name, landlord_id, property_manager_id, city, province, postal_code, street_address, apartments, amenities);
                 if(result == 1)
                 {
-                    return "Successfully added building: " + building_name;
+                    retVal["success"] = true;
+                    return StatusCode(200, retVal);
                 }
-                return "Error adding building";
+                retVal["success"] = false;
+                return StatusCode(500, retVal);
             }
         }
         #endregion
@@ -116,8 +120,9 @@ namespace CPSC471_RentalSystemAPI.Controllers
         // Changed from endpoints document. Now returns a string instead of a boolean and integer.
         [Microsoft.AspNetCore.Mvc.HttpPut]
         [Microsoft.AspNetCore.Mvc.Route("districtManager/addEmployee")]
-        public String addEmployee([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
+        public IActionResult addEmployee([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            JObject retVal = new JObject();
             String manager_id = parameters["manager_id"].ToString();
             String password = parameters["password"].ToString();
             String emp_FirstName = parameters["first_name"].ToString();
@@ -136,20 +141,22 @@ namespace CPSC471_RentalSystemAPI.Controllers
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(manager_id), password, USER_TYPE.DISTRICT_MANAGER);
             if (authenticationResult == false)
             {
-                HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
-                String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
-                return response;
+                retVal["success"] = false;
+                return StatusCode(401, retVal);
             }
             else
             {
                 int result = dbModel.addEmployee(manager_id, emp_FirstName, emp_LastName, emp_password, emp_salary, house_number, street, city, province, postal_code, hire_date);
                 if (result > 0)
                 {
-                    return "Success. New employee id: \"" + result + "\"";
+                    retVal["success"] = false;
+                    retVal["user_id"] = result;
+                    return StatusCode(200, retVal);
                 }
                 else
                 {
-                    return "Error occured adding employee.";
+                    retVal["success"] = false;
+                    return StatusCode(500, retVal);
                 }
             }
         }
@@ -164,8 +171,9 @@ namespace CPSC471_RentalSystemAPI.Controllers
         // Changed from original endpoints document. Now returns a string instead of a boolean.
         [Microsoft.AspNetCore.Mvc.HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("technician/completeRequest")]
-        public String completeRequest([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
+        public IActionResult completeRequest([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            JObject retVal = new JObject();
             String employee_id = parameters["employee_id"].ToString();
             String password = parameters["password"].ToString();
             String request_id = parameters["request_id"].ToString();
@@ -176,20 +184,21 @@ namespace CPSC471_RentalSystemAPI.Controllers
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.TECHNICIAN);
             if (authenticationResult == false)
             {
-                HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
-                String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
-                return response;
+                retVal["success"] = false;
+                return StatusCode(401, retVal);
             }
             else
             {
                 int result = dbModel.completeRequest(employee_id, request_id, building_name, tool_id, completion_date);
                 if (result > 0)
                 {
-                    return "Successfully marked request " + request_id + " as completed.";
+                    retVal["success"] = true;
+                    return StatusCode(200, retVal);
                 }
                 else
                 {
-                    return "Error marking request as completed.";
+                    retVal["success"] = false;
+                    return StatusCode(500, retVal);
                 }
             }
         }
@@ -324,8 +333,9 @@ namespace CPSC471_RentalSystemAPI.Controllers
         // Changed from endpoints document. Now returns string instead of boolean and int.
         [Microsoft.AspNetCore.Mvc.HttpPut]
         [Microsoft.AspNetCore.Mvc.Route("client/submitRequest")]
-        public String submitRequest([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
+        public IActionResult submitRequest([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            JObject retVal = new JObject();
             String client_id = parameters["client_id"].ToString();
             String password = parameters["password"].ToString();
             String description = parameters["description"].ToString();
@@ -333,20 +343,22 @@ namespace CPSC471_RentalSystemAPI.Controllers
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(client_id), password, USER_TYPE.CLIENT);
             if (authenticationResult == false)
             {
-                HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
-                String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
-                return response;
+                retVal["success"] = false;
+                return StatusCode(401, retVal);
             }
             else
             {
                 int result = dbModel.submitRequest(client_id, description);
                 if (result > 0)
                 {
-                    return "Successfully submitted the request. The request id is: " + result;
+                    retVal["success"] = true;
+                    retVal["request_id"] = result;
+                    return StatusCode(200, retVal);
                 }
                 else
                 {
-                    return "Error submitting request.";
+                    retVal["success"] = false;
+                    return StatusCode(500, retVal);
                 }
             }
         }
@@ -361,8 +373,9 @@ namespace CPSC471_RentalSystemAPI.Controllers
         // then updates the bill with the payment type and sets the payment date to the date when this endpoint is called.
         [Microsoft.AspNetCore.Mvc.HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("client/payBill")]
-        public String payBill([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
+        public IActionResult payBill([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            JObject retVal = new JObject();
             String client_id = parameters["client_id"].ToString();
             String password = parameters["password"].ToString();
             String bill_id = parameters["bill_id"].ToString();
@@ -371,20 +384,21 @@ namespace CPSC471_RentalSystemAPI.Controllers
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(client_id), password, USER_TYPE.CLIENT);
             if (authenticationResult == false)
             {
-                HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
-                String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
-                return response;
+                retVal["success"] = false;
+                return StatusCode(401, retVal);
             }
             else
             {
                 int result = dbModel.payBill(client_id, bill_id, payment_type);
                 if (result > 0)
                 {
-                    return "Successfully paid bill " + bill_id;
+                    retVal["success"] = true;
+                    return StatusCode(200, retVal);
                 }
                 else
                 {
-                    return "Error paying bill";
+                    retVal["success"] = false;
+                    return StatusCode(500, retVal);
                 }
             }
         }

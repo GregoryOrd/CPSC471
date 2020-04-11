@@ -251,7 +251,7 @@ namespace CPSC471_RentalSystemAPI.Helpers
                 results.Add(Execute_Non_Query_Store_Procedure("addAmenity", Parameters));
             }
 
-            if (results.Contains(0)) { return 0; }
+            if (results.Contains(-2)) { return 0; }
             return 1;
         }
 
