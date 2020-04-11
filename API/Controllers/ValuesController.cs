@@ -204,7 +204,7 @@ namespace CPSC471_RentalSystemAPI.Controllers
         // PUT api/landlord/addClient
         [Microsoft.AspNetCore.Mvc.HttpPut]
         [Microsoft.AspNetCore.Mvc.Route("landlord/addClient")]
-        public JObject addClient([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
+        public IActionResult addClient([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
             String employee_id          = parameters["employee_id"].ToString();
             String password             = parameters["password"].ToString();
@@ -216,7 +216,7 @@ namespace CPSC471_RentalSystemAPI.Controllers
             int apartment_num           = (int) parameters["apartment_num"];
             String building_name        = parameters["building_name"].ToString();
             DateTime start_date         = (DateTime) parameters["start_date"];
-            DateTime end_date         = (DateTime) parameters["end_date"];
+            DateTime end_date           = (DateTime) parameters["end_date"];
             List<Dependent> dependents  = new List<Dependent>();
             foreach (JObject d in parameters["dependents"])
             {
@@ -224,14 +224,14 @@ namespace CPSC471_RentalSystemAPI.Controllers
                     d["last_name"].ToString(), d["password"].ToString()));
             }
 
-            Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             JObject retVal = new JObject();
+
+            Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
                 HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
-                String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
                 retVal["success"] = false;
-                return retVal;
+                return StatusCode(401, retVal);
             }
             else
             {
@@ -241,12 +241,12 @@ namespace CPSC471_RentalSystemAPI.Controllers
                 if (result > 0)
                 {
                     retVal["success"] = true;
-                    return retVal;
+                    return StatusCode(200, retVal);
                 }
                 else
                 {
                     retVal["success"] = false;
-                    return retVal;
+                    return StatusCode(500, retVal);
                 }
             }
         }
