@@ -295,72 +295,137 @@ namespace CPSC471_RentalSystemAPI.Controllers
         [Microsoft.AspNetCore.Mvc.HttpGet]
         [Microsoft.AspNetCore.Mvc.Route("landlord/listClients")]
         //public DataTable listClients()
-        public String listClients([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
+        public IActionResult listClients([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
-            String employee_id = parameters["employee_id"].ToString();
-            String password = parameters["password"].ToString();
-            /*DatabaseModel dbModel = new DatabaseModel();
-            DataTable clients = dbModel.listClients();
-            return clients;*/
+            String employee_id  = parameters["employee_id"].ToString();
+            String password     = parameters["password"].ToString();
+            String client_id    = parameters["client_id"].ToString();
+
+            JObject retVal = new JObject();
+
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
                 HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
-                String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
-                return response;
+                retVal["success"] = false;
+                return StatusCode(401, retVal);
             }
-            return "listClients -- Needs to be improved";
+            else
+            {
+                int result = dbModel.removeClient(client_id);
+                if (result > 0)
+                {
+                    retVal["success"] = true;
+                    return StatusCode(200, retVal);
+                }
+                else
+                {
+                    retVal["success"] = false;
+                    return StatusCode(500, retVal);
+                }
+            }
         }
 
         // GET api/landlord/getApartment
         [Microsoft.AspNetCore.Mvc.HttpGet]
         [Microsoft.AspNetCore.Mvc.Route("landlord/getApartment")]
-        public String getApartment([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
+        public IActionResult getApartment([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
-            String employee_id = parameters["employee_id"].ToString();
-            String password = parameters["password"].ToString();
+            String employee_id  = parameters["employee_id"].ToString();
+            String password     = parameters["password"].ToString();
+            String client_id    = parameters["client_id"].ToString();
+
+            JObject retVal = new JObject();
+
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
                 HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
-                String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
-                return response;
+                retVal["success"] = false;
+                return StatusCode(401, retVal);
             }
-            return "getApartment -- Not yet implemented.";
+            else
+            {
+                int result = dbModel.removeClient(client_id);
+                if (result > 0)
+                {
+                    retVal["success"] = true;
+                    return StatusCode(200, retVal);
+                }
+                else
+                {
+                    retVal["success"] = false;
+                    return StatusCode(500, retVal);
+                }
+            }
         }
 
         // GET api/landlord/getBuilding
         [Microsoft.AspNetCore.Mvc.HttpGet]
         [Microsoft.AspNetCore.Mvc.Route("landlord/getBuilding")]
-        public String getBuilding([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
+        public IActionResult getBuilding([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
-            String employee_id = parameters["employee_id"].ToString();
-            String password = parameters["password"].ToString();
+            String employee_id  = parameters["employee_id"].ToString();
+            String password     = parameters["password"].ToString();
+            String client_id    = parameters["client_id"].ToString();
+
+            JObject retVal = new JObject();
+
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
                 HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
-                String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
-                return response;
+                retVal["success"] = false;
+                return StatusCode(401, retVal);
             }
-            return "getBuilding -- Not yet implemented.";
+            else
+            {
+                int result = dbModel.removeClient(client_id);
+                if (result > 0)
+                {
+                    retVal["success"] = true;
+                    return StatusCode(200, retVal);
+                }
+                else
+                {
+                    retVal["success"] = false;
+                    return StatusCode(500, retVal);
+                }
+            }
         }
 
         // GET api/landlord/getClient
         [Microsoft.AspNetCore.Mvc.HttpGet]
         [Microsoft.AspNetCore.Mvc.Route("landlord/getClient")]
-        public String getClient([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
+        public IActionResult getClient([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
-            String employee_id = parameters["employee_id"].ToString();
-            String password = parameters["password"].ToString();
+            String employee_id  = parameters["employee_id"].ToString();
+            String password     = parameters["password"].ToString();
+            String client_id    = parameters["client_id"].ToString();
+
+            JObject retVal = new JObject();
+
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
                 HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
-                String response = "Status Code: " + (int)exception.Response.StatusCode + " (" + exception.Response.ReasonPhrase.ToString() + ")";
-                return response;
+                retVal["success"] = false;
+                return StatusCode(401, retVal);
             }
-            return "getClient -- Not yet implemented.";
+            else
+            {
+                int result = dbModel.removeClient(client_id);
+                if (result > 0)
+                {
+                    retVal["success"] = true;
+                    return StatusCode(200, retVal);
+                }
+                else
+                {
+                    retVal["success"] = false;
+                    return StatusCode(500, retVal);
+                }
+            }
         }
         #endregion
 
