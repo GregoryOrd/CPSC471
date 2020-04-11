@@ -8485,11 +8485,12 @@
       ]
     },
     "System.Diagnostics.FileVersionInfo/4.3.0": {
-      "sha512": "6WVi7gArhxRiC+3qI5V2mFe1gHENj/F7xT5PQiy/lI/RsxXeivrt09WF0huwSQK2ubnmyyRFeA9z3w743/w32A==",
+      "sha512": "omCF64wzQ3Q2CeIqkD6lmmxeMZtGHUmzgFMPjfVaOsyqpR66p/JaZzManMw1s33osoAb5gqpncsjie67+yUPHQ==",
       "type": "package",
       "path": "system.diagnostics.fileversioninfo/4.3.0",
       "files": [
         ".nupkg.metadata",
+        ".signature.p7s",
         "ThirdPartyNotices.txt",
         "dotnet_library_license.txt",
         "lib/MonoAndroid10/_._",
@@ -12356,11 +12357,12 @@
       ]
     },
     "System.Xml.XmlSerializer/4.3.0": {
-      "sha512": "VShQJhOxgD/5M2Z1IWm1vMaSqlbjo1zdFf8H7Ahte6bTvSUhUko/gDpAVVhGgGgTDeue4QyNg1fu1Zz2GKSEuQ==",
+      "sha512": "MYoTCP7EZ98RrANESW05J5ZwskKDoN0AuZ06ZflnowE50LTpbR5yRg3tHckTVm5j/m47stuGgCrCHWePyHS70Q==",
       "type": "package",
       "path": "system.xml.xmlserializer/4.3.0",
       "files": [
         ".nupkg.metadata",
+        ".signature.p7s",
         "ThirdPartyNotices.txt",
         "dotnet_library_license.txt",
         "lib/MonoAndroid10/_._",
@@ -12550,23 +12552,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\gord\\.nuget\\packages\\": {},
+    "C:\\Users\\matta\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\gord\\Desktop\\CPSC471\\Project\\ProjectTemp\\CPSC471_RentalSystemAPI.csproj",
+      "projectUniqueName": "C:\\Users\\matta\\Documents\\GitHub\\CPSC471\\API\\CPSC471_RentalSystemAPI.csproj",
       "projectName": "CPSC471_RentalSystemAPI",
-      "projectPath": "C:\\Users\\gord\\Desktop\\CPSC471\\Project\\ProjectTemp\\CPSC471_RentalSystemAPI.csproj",
-      "packagesPath": "C:\\Users\\gord\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\gord\\Desktop\\CPSC471\\Project\\ProjectTemp\\obj\\",
+      "projectPath": "C:\\Users\\matta\\Documents\\GitHub\\CPSC471\\API\\CPSC471_RentalSystemAPI.csproj",
+      "packagesPath": "C:\\Users\\matta\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\matta\\Documents\\GitHub\\CPSC471\\API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\gord\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\matta\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

@@ -8,6 +8,11 @@ using System.Configuration;
 using System.Data;
 using System.Web;
 using CPSC471_RentalSystemAPI.Models;
+using System.Transactions;
+using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Hosting;
+using MySql.Data.MySqlClient.Memcached;
+using System.Runtime.InteropServices;
 
 namespace CPSC471_RentalSystemAPI.Helpers
 {
@@ -21,7 +26,7 @@ namespace CPSC471_RentalSystemAPI.Helpers
         {
             try
             {
-                return "Server=localhost;Port=3306;Database=cpsc471_rental_system;Uid=root;Pwd=;";
+                return "Server=localhost;Port=3306;Database=cpsc471_rental_system;Uid=root;Pwd=&_perbanana&MUlator69;";
             }
             catch { return null; }
         }
@@ -92,6 +97,7 @@ namespace CPSC471_RentalSystemAPI.Helpers
             catch (Exception ex)
             {
                 string s = ex.Message;
+                Console.WriteLine("\n\nERROR\n" + s + "\n");
                 successfulQuery = -2;
             }
 
@@ -333,6 +339,203 @@ namespace CPSC471_RentalSystemAPI.Helpers
             int result = Execute_Non_Query_Store_Procedure("payBill", Parameters);
             return result;
         }
+
+        public int addClient(String first_name, String last_name, String password, String contract_type, String card_number,
+            Dependent[] dependents, int apartment_num, String building_name, DateTime start_date, DateTime end_date)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[3];
+            Parameters[0] = new MySqlParameter("@fName", first_name);
+            Parameters[1] = new MySqlParameter("@lName", last_name);
+            Parameters[2] = new MySqlParameter("@pword", password);
+            int result = Execute_Non_Query_Store_Procedure("addUser", Parameters);
+            if (result != 1) return -1;
+
+            DataTable userIDTable = Execute_Data_Query_Store_Procedure("getUserID", Parameters);
+            int client_id = (int)userIDTable.Rows[0][0];
+            Parameters = new MySqlParameter[3];
+            Parameters[0] = new MySqlParameter("@uid", client_id);
+            Parameters[1] = new MySqlParameter("@regDate", start_date);
+            Parameters[2] = new MySqlParameter("@contract", contract_type);
+            result = Execute_Non_Query_Store_Procedure("addClient", Parameters);
+            if (result != 1) return -1;
+
+            Parameters = new MySqlParameter[5];
+            Parameters[0] = new MySqlParameter("@uid", client_id);
+            Parameters[1] = new MySqlParameter("@anum", apartment_num);
+            Parameters[2] = new MySqlParameter("@bname", building_name);
+            Parameters[3] = new MySqlParameter("@sdate", start_date);
+            Parameters[4] = new MySqlParameter("@edate", end_date);
+            result = Execute_Non_Query_Store_Procedure("setRents", Parameters);
+            if (result != 1) return -1;
+
+            foreach (Dependent d in dependents)
+            {
+                Parameters = new MySqlParameter[3];
+                Parameters[0] = new MySqlParameter("@fName", d.first_name);
+                Parameters[1] = new MySqlParameter("@lName", d.last_name);
+                Parameters[2] = new MySqlParameter("@pword", d.password_hash);
+                result = Execute_Non_Query_Store_Procedure("addUser", Parameters);
+                if (result != 1) return -1;
+
+                userIDTable = Execute_Data_Query_Store_Procedure("getUserID", Parameters);
+                int  dep_id= (int) userIDTable.Rows[0][0];
+
+                Parameters = new MySqlParameter[3];
+                Parameters[0] = new MySqlParameter("@uid", dep_id);
+                Parameters[1] = new MySqlParameter("@cid", client_id);
+                Parameters[2] = new MySqlParameter("@u18", d.is_under_18);
+                result = Execute_Non_Query_Store_Procedure("addDependant", Parameters);
+                if (result != 1) return -1;
+            }
+
+            return client_id;
+        }
+
+        public int removeClient(String client_id)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[1];
+            Parameters[0] = new MySqlParameter("@cid", client_id);
+            return Execute_Non_Query_Store_Procedure("removeClient", Parameters);
+        }
+
+        public JArray listClients(String landlord_id, String[] buildings)
+        {
+            DataTable clients;
+            if (buildings.Length == 0)
+            {
+                MySqlParameter[] Parameters = new MySqlParameter[1];
+                Parameters[0] = new MySqlParameter("@llid", landlord_id);
+                clients = Execute_Data_Query_Store_Procedure("listClients", Parameters);
+            }
+            else
+            {
+                for (int i = 0; i < buildings.Length; i++)
+                {
+                    buildings[i] = "'" + buildings[i] + "'";
+                }
+                MySqlParameter[] Parameters = new MySqlParameter[2];
+                Parameters[0] = new MySqlParameter("@llid", landlord_id);
+                Parameters[1] = new MySqlParameter("@bnames", String.Join(",", buildings));
+                clients = Execute_Data_Query_Store_Procedure("listClientsFiltered", Parameters);
+            }
+
+            DataRowCollection rows = clients.Rows;
+            JArray retVal = new JArray();
+            for (int i = 0; i < rows.Count; i ++)
+            {
+                retVal.Add(rows[i][0]);
+            }
+
+            return retVal;
+        }
+
+        public JObject getApartment(String building_name, int apartment_num)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[2];
+            Parameters[0] = new MySqlParameter("@bname", building_name);
+            Parameters[1] = new MySqlParameter("@anum", apartment_num);
+            DataTable apartment = Execute_Data_Query_Store_Procedure("getApartment", Parameters);
+
+            if (apartment == null || apartment.Rows.Count == 0) return null;
+
+            JObject retVal = new JObject();
+            foreach (DataColumn col in apartment.Columns)
+            {
+                retVal[col.ColumnName] = apartment.Rows[0][col.Ordinal].ToString();
+            }
+
+            DataTable renter = Execute_Data_Query_Store_Procedure("getRenter", Parameters);
+            retVal["renter_id"] = renter.Rows.Count > 0 ? renter.Rows[0][0].ToString() : null;
+
+            DataTable rooms = Execute_Data_Query_Store_Procedure("getRooms", Parameters);
+            JArray roomArr = new JArray();
+            for (int i = 0; i < rooms.Rows.Count; i++)
+            {
+                JObject room = new JObject();
+                foreach (DataColumn col in rooms.Columns)
+                {
+                    room[col.ColumnName] = rooms.Rows[i][col.Ordinal].ToString();
+                }
+                roomArr.Add(room);
+            }
+            retVal["rooms"] = roomArr;
+
+            return retVal;
+        }
+
+        public JObject getBuilding(String building_name)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[1];
+            Parameters[0] = new MySqlParameter("@bname", building_name);
+            DataTable building = Execute_Data_Query_Store_Procedure("getBuilding", Parameters);
+
+            if (building == null || building.Rows.Count == 0) return null;
+
+            JObject retVal = new JObject();
+            foreach (DataColumn col in building.Columns)
+            {
+                retVal[col.ColumnName] = building.Rows[0][col.Ordinal].ToString();
+            }
+
+            DataTable anums = Execute_Data_Query_Store_Procedure("getApartmentNums", Parameters);
+            JArray appArr = new JArray();
+            double fullApps = 0;
+            for (int i = 0; i < anums.Rows.Count; i++)
+            {
+                JObject app = getApartment(building_name, (int) anums.Rows[i][0]);
+                appArr.Add(app);
+                if (app["renter_id"] != null) fullApps++;
+            }
+            retVal["apartments"] = appArr;
+            retVal["occupancy"] = anums.Rows.Count > 0 ? 100 - (100 * fullApps / (double) anums.Rows.Count) : 0;
+
+            DataTable amens = Execute_Data_Query_Store_Procedure("getAmenities", Parameters);
+            JArray amenArr = new JArray();
+            for (int i = 0; i < amens.Rows.Count; i++)
+            {
+                JObject amen = new JObject();
+                foreach (DataColumn col in amens.Columns)
+                {
+                    amen[col.ColumnName] = amens.Rows[i][col.Ordinal].ToString();
+                }
+                amenArr.Add(amen);
+            }
+            retVal["amenities"] = amenArr;
+
+            return retVal;
+        }
+
+        public JObject getClient(String client_id)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[1];
+            Parameters[0] = new MySqlParameter("@cid", client_id);
+            DataTable client = Execute_Data_Query_Store_Procedure("getClient", Parameters);
+
+            if (client == null || client.Rows.Count == 0) return null;
+
+            JObject retVal = new JObject();
+            foreach (DataColumn col in client.Columns)
+            {
+                retVal[col.ColumnName] = client.Rows[0][col.Ordinal].ToString();
+            }
+
+            DataTable deps = Execute_Data_Query_Store_Procedure("getDependants", Parameters);
+            JArray depArr = new JArray();
+            for (int i = 0; i < deps.Rows.Count; i++)
+            {
+                JObject dep = new JObject();
+                foreach (DataColumn col in deps.Columns)
+                {
+                    dep[col.ColumnName] = deps.Rows[i][col.Ordinal].ToString();
+                }
+                depArr.Add(dep);
+            }
+            retVal["dependants"] = depArr;
+
+            return retVal;
+        }
+
         #endregion
     }
 }
+// Parameters[0] = new MySqlParameter("@", );
