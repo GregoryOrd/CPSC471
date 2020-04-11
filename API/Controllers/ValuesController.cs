@@ -420,16 +420,17 @@ namespace CPSC471_RentalSystemAPI.Controllers
             }
             else
             {
-                int result = dbModel.removeClient(client_id);
-                if (result > 0)
+                JObject result = dbModel.getClient(client_id);
+                if (result != null)
                 {
                     retVal["success"] = true;
+                    retVal["client"] = result;
                     return StatusCode(200, retVal);
                 }
                 else
                 {
                     retVal["success"] = false;
-                    return StatusCode(500, retVal);
+                    return StatusCode(404, retVal);
                 }
             }
         }

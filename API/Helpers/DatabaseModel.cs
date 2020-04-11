@@ -505,6 +505,36 @@ namespace CPSC471_RentalSystemAPI.Helpers
             return retVal;
         }
 
+        public JObject getClient(String client_id)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[1];
+            Parameters[0] = new MySqlParameter("@cid", client_id);
+            DataTable client = Execute_Data_Query_Store_Procedure("getClient", Parameters);
+
+            if (client == null || client.Rows.Count == 0) return null;
+
+            JObject retVal = new JObject();
+            foreach (DataColumn col in client.Columns)
+            {
+                retVal[col.ColumnName] = client.Rows[0][col.Ordinal].ToString();
+            }
+
+            DataTable deps = Execute_Data_Query_Store_Procedure("getDependants", Parameters);
+            JArray depArr = new JArray();
+            for (int i = 0; i < deps.Rows.Count; i++)
+            {
+                JObject dep = new JObject();
+                foreach (DataColumn col in deps.Columns)
+                {
+                    dep[col.ColumnName] = deps.Rows[i][col.Ordinal].ToString();
+                }
+                depArr.Add(dep);
+            }
+            retVal["dependants"] = depArr;
+
+            return retVal;
+        }
+
         #endregion
     }
 }
