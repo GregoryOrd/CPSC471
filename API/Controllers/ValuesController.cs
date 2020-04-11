@@ -362,7 +362,7 @@ namespace CPSC471_RentalSystemAPI.Controllers
                 else
                 {
                     retVal["success"] = false;
-                    return StatusCode(500, retVal);
+                    return StatusCode(404, retVal);
                 }
             }
         }
@@ -372,9 +372,9 @@ namespace CPSC471_RentalSystemAPI.Controllers
         [Microsoft.AspNetCore.Mvc.Route("landlord/getBuilding")]
         public IActionResult getBuilding([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
-            String employee_id  = parameters["employee_id"].ToString();
-            String password     = parameters["password"].ToString();
-            String client_id    = parameters["client_id"].ToString();
+            String employee_id      = parameters["employee_id"].ToString();
+            String password         = parameters["password"].ToString();
+            String building_name    = parameters["building_name"].ToString();
 
             JObject retVal = new JObject();
 
@@ -386,16 +386,17 @@ namespace CPSC471_RentalSystemAPI.Controllers
             }
             else
             {
-                int result = dbModel.removeClient(client_id);
-                if (result > 0)
+                JObject result = dbModel.getBuilding(building_name);
+                if (result != null)
                 {
                     retVal["success"] = true;
+                    retVal["building"] = result;
                     return StatusCode(200, retVal);
                 }
                 else
                 {
                     retVal["success"] = false;
-                    return StatusCode(500, retVal);
+                    return StatusCode(404, retVal);
                 }
             }
         }

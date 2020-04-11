@@ -463,6 +463,48 @@ namespace CPSC471_RentalSystemAPI.Helpers
             return retVal;
         }
 
+        public JObject getBuilding(String building_name)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[1];
+            Parameters[0] = new MySqlParameter("@bname", building_name);
+            DataTable building = Execute_Data_Query_Store_Procedure("getBuilding", Parameters);
+
+            if (building == null || building.Rows.Count == 0) return null;
+
+            JObject retVal = new JObject();
+            foreach (DataColumn col in building.Columns)
+            {
+                retVal[col.ColumnName] = building.Rows[0][col.Ordinal].ToString();
+            }
+
+            DataTable anums = Execute_Data_Query_Store_Procedure("getApartmentNums", Parameters);
+            JArray appArr = new JArray();
+            double fullApps = 0;
+            for (int i = 0; i < anums.Rows.Count; i++)
+            {
+                JObject app = getApartment(building_name, (int) anums.Rows[i][0]);
+                appArr.Add(app);
+                if (app["renter_id"] != null) fullApps++;
+            }
+            retVal["apartments"] = appArr;
+            retVal["occupancy"] = anums.Rows.Count > 0 ? 100 - (100 * fullApps / (double) anums.Rows.Count) : 0;
+
+            DataTable amens = Execute_Data_Query_Store_Procedure("getAmenities", Parameters);
+            JArray amenArr = new JArray();
+            for (int i = 0; i < amens.Rows.Count; i++)
+            {
+                JObject amen = new JObject();
+                foreach (DataColumn col in amens.Columns)
+                {
+                    amen[col.ColumnName] = amens.Rows[i][col.Ordinal].ToString();
+                }
+                amenArr.Add(amen);
+            }
+            retVal["amenities"] = amenArr;
+
+            return retVal;
+        }
+
         #endregion
     }
 }
