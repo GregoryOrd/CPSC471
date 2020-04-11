@@ -12,6 +12,7 @@ using System.Transactions;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Hosting;
 using MySql.Data.MySqlClient.Memcached;
+using System.Runtime.InteropServices;
 
 namespace CPSC471_RentalSystemAPI.Helpers
 {
@@ -424,6 +425,40 @@ namespace CPSC471_RentalSystemAPI.Helpers
             {
                 retVal.Add(rows[i][0]);
             }
+
+            return retVal;
+        }
+
+        public JObject getApartment(String building_name, int apartment_num)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[2];
+            Parameters[0] = new MySqlParameter("@bname", building_name);
+            Parameters[1] = new MySqlParameter("@anum", apartment_num);
+            DataTable apartment = Execute_Data_Query_Store_Procedure("getApartment", Parameters);
+
+            if (apartment == null || apartment.Rows.Count == 0) return null;
+
+            JObject retVal = new JObject();
+            foreach (DataColumn col in apartment.Columns)
+            {
+                retVal[col.ColumnName] = apartment.Rows[0][col.Ordinal].ToString();
+            }
+
+            DataTable renter = Execute_Data_Query_Store_Procedure("getRenter", Parameters);
+            retVal["renter_id"] = renter.Rows.Count > 0 ? renter.Rows[0][0].ToString() : null;
+
+            DataTable rooms = Execute_Data_Query_Store_Procedure("getRooms", Parameters);
+            JArray roomArr = new JArray();
+            for (int i = 0; i < rooms.Rows.Count; i++)
+            {
+                JObject room = new JObject();
+                foreach (DataColumn col in rooms.Columns)
+                {
+                    room[col.ColumnName] = rooms.Rows[i][col.Ordinal].ToString();
+                }
+                roomArr.Add(room);
+            }
+            retVal["rooms"] = roomArr;
 
             return retVal;
         }

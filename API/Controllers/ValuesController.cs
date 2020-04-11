@@ -337,9 +337,10 @@ namespace CPSC471_RentalSystemAPI.Controllers
         [Microsoft.AspNetCore.Mvc.Route("landlord/getApartment")]
         public IActionResult getApartment([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
-            String employee_id  = parameters["employee_id"].ToString();
-            String password     = parameters["password"].ToString();
-            String client_id    = parameters["client_id"].ToString();
+            String employee_id      = parameters["employee_id"].ToString();
+            String password         = parameters["password"].ToString();
+            String building_name    = parameters["building_name"].ToString();
+            int apartment_num       = (int) parameters["apartment_num"];
 
             JObject retVal = new JObject();
 
@@ -351,10 +352,11 @@ namespace CPSC471_RentalSystemAPI.Controllers
             }
             else
             {
-                int result = dbModel.removeClient(client_id);
-                if (result > 0)
+                JObject result = dbModel.getApartment(building_name, apartment_num);
+                if (result != null)
                 {
                     retVal["success"] = true;
+                    retVal["apartment"] = result;
                     return StatusCode(200, retVal);
                 }
                 else
