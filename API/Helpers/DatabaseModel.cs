@@ -387,6 +387,13 @@ namespace CPSC471_RentalSystemAPI.Helpers
             return client_id;
         }
 
+        public int removeClient(String client_id)
+        {
+            MySqlParameter[] Parameters = new MySqlParameter[1];
+            Parameters[0] = new MySqlParameter("@cid", client_id);
+            return Execute_Non_Query_Store_Procedure("removeClient", Parameters);
+        }
+
         #endregion
     }
 }
