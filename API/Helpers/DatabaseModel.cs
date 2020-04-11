@@ -9,6 +9,9 @@ using System.Data;
 using System.Web;
 using CPSC471_RentalSystemAPI.Models;
 using System.Transactions;
+using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Hosting;
+using MySql.Data.MySqlClient.Memcached;
 
 namespace CPSC471_RentalSystemAPI.Helpers
 {
@@ -392,6 +395,37 @@ namespace CPSC471_RentalSystemAPI.Helpers
             MySqlParameter[] Parameters = new MySqlParameter[1];
             Parameters[0] = new MySqlParameter("@cid", client_id);
             return Execute_Non_Query_Store_Procedure("removeClient", Parameters);
+        }
+
+        public JArray listClients(String landlord_id, String[] buildings)
+        {
+            DataTable clients;
+            if (buildings.Length == 0)
+            {
+                MySqlParameter[] Parameters = new MySqlParameter[1];
+                Parameters[0] = new MySqlParameter("@llid", landlord_id);
+                clients = Execute_Data_Query_Store_Procedure("listClients", Parameters);
+            }
+            else
+            {
+                for (int i = 0; i < buildings.Length; i++)
+                {
+                    buildings[i] = "'" + buildings[i] + "'";
+                }
+                MySqlParameter[] Parameters = new MySqlParameter[2];
+                Parameters[0] = new MySqlParameter("@llid", landlord_id);
+                Parameters[1] = new MySqlParameter("@bnames", String.Join(",", buildings));
+                clients = Execute_Data_Query_Store_Procedure("listClientsFiltered", Parameters);
+            }
+
+            DataRowCollection rows = clients.Rows;
+            JArray retVal = new JArray();
+            for (int i = 0; i < rows.Count; i ++)
+            {
+                retVal.Add(rows[i][0]);
+            }
+
+            return retVal;
         }
 
         #endregion

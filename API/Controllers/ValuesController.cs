@@ -229,7 +229,6 @@ namespace CPSC471_RentalSystemAPI.Controllers
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
-                HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
@@ -269,7 +268,6 @@ namespace CPSC471_RentalSystemAPI.Controllers
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
-                HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
@@ -291,31 +289,39 @@ namespace CPSC471_RentalSystemAPI.Controllers
         #endregion
 
         #region Get Requests
+        // Now just returns client IDs
         // GET api/landlord/listClients
         [Microsoft.AspNetCore.Mvc.HttpGet]
         [Microsoft.AspNetCore.Mvc.Route("landlord/listClients")]
-        //public DataTable listClients()
         public IActionResult listClients([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
-            String employee_id  = parameters["employee_id"].ToString();
-            String password     = parameters["password"].ToString();
-            String client_id    = parameters["client_id"].ToString();
+            String employee_id      = parameters["employee_id"].ToString();
+            String password         = parameters["password"].ToString();
+            List<String> buildings  = new List<String>();
+
+            if (parameters.ContainsKey("buildings"))
+            {
+                foreach (String b in parameters["buildings"])
+                {
+                    buildings.Add(b);
+                }
+            }
 
             JObject retVal = new JObject();
 
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
-                HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
             else
             {
-                int result = dbModel.removeClient(client_id);
-                if (result > 0)
+                JArray result = dbModel.listClients(employee_id, buildings.ToArray());
+                if (result != null)
                 {
                     retVal["success"] = true;
+                    retVal["clients"] = result;
                     return StatusCode(200, retVal);
                 }
                 else
@@ -340,7 +346,6 @@ namespace CPSC471_RentalSystemAPI.Controllers
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
-                HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
@@ -374,7 +379,6 @@ namespace CPSC471_RentalSystemAPI.Controllers
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
-                HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
@@ -408,7 +412,6 @@ namespace CPSC471_RentalSystemAPI.Controllers
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
-                HttpResponseException exception = new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
