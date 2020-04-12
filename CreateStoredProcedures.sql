@@ -3,9 +3,15 @@ DROP procedure IF EXISTS `listClients`;
 
 DELIMITER $$
 USE `cpsc471_rental_system`$$
-CREATE PROCEDURE `listClients` ()
+CREATE PROCEDURE `listClients`(IN llid int)
 BEGIN
-	SELECT * FROM CLIENT;
+	SELECT client.userID
+	FROM client
+	INNER JOIN rents
+	ON client.userID = rents.clientID
+	INNER JOIN building
+	ON rents.building_name = building.building_name
+	WHERE building.landlordID = llid;
 END$$
 
 DELIMITER ;
@@ -249,6 +255,198 @@ BEGIN
 	UPDATE bill
     SET bill.payment_type = pay_type, bill.payment_date = pay_date
     WHERE bill.clientID = client_id AND bill.billID = bill_id;
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `addClient`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `addClient`(IN uid int, IN regDate datetime, IN contract VARCHAR(45))
+BEGIN
+	INSERT INTO client
+    VALUES (uid, regDate, contract);
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `addDependant`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `addDependant`(IN uid int, IN cid int, IN u18 bool)
+BEGIN
+	INSERT INTO dependant
+    VALUES (uid, cid, u18);
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `getAmenities`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `getAmenities`(IN bname VARCHAR(45))
+BEGIN
+	SELECT *
+	FROM amenity
+    WHERE amenity.building_name = bname;
+END$$
+
+DELIMITER ;
+
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `getApartment`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `getApartment`(IN anum int, IN bname VARCHAR(45))
+BEGIN
+	SELECT apartment.num_floors, building.city, building.province, building.postal_code, building.street_address
+	FROM apartment
+	INNER JOIN building
+	ON apartment.building_name = building.building_name
+    WHERE apartment.apartment_num = anum
+	AND apartment.building_name = bname;
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `getApartmentNums`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `getApartmentNums`(IN bname VARCHAR(45))
+BEGIN
+	SELECT apartment.apartment_num
+	FROM apartment
+    WHERE apartment.building_name = bname;
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `getBuilding`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `getBuilding`(IN bname VARCHAR(45))
+BEGIN
+	SELECT *
+	FROM building
+    WHERE building.building_name = bname;
+END$$
+
+DELIMITER ;
+
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `getClient`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `getClient`(IN cid VARCHAR(45))
+BEGIN
+	SELECT user.first_name, user.last_name, client.contract_type, client.registration_date, rents.apartment_num, rents.building_name, rents.start_date, rents.end_date
+	FROM client
+	INNER JOIN user
+	ON client.userID = user.userID
+	LEFT JOIN rents
+	ON client.userID = rents.clientID
+    WHERE client.userID = cid;
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `getDependants`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `getDependants`(IN cid VARCHAR(45))
+BEGIN
+	SELECT dependant.userID, dependant.is_under_eighteen, user.first_name, user.last_name
+	FROM dependant
+	INNER JOIN user
+	ON dependant.userID = user.userID
+    WHERE dependant.client_dependee = cid;
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `getRooms`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `getRooms`(IN anum int, IN bname VARCHAR(45))
+BEGIN
+	SELECT room.*
+	FROM apartment
+	INNER JOIN room
+	ON apartment.building_name = room.building_name
+	AND apartment.apartment_num = room.apartment_num
+	WHERE apartment.apartment_num = anum
+	AND apartment.building_name = bname;
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `listClientsFiltered`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `listClientsFiltered`(IN llid int, IN bnames VARCHAR(1024))
+BEGIN
+	set @q = concat('SELECT client.userID
+	FROM client
+	INNER JOIN rents
+	ON client.userID = rents.clientID
+	INNER JOIN building
+	ON rents.building_name = building.building_name
+	WHERE building.landlordID = ', llid, '
+    AND building.building_name IN (', bnames, ')');
+    prepare stmt from @q;
+    execute stmt;
+    deallocate prepare stmt;
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `removeClient`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `removeClient`(IN cid int)
+BEGIN
+	DELETE FROM dependant WHERE client_dependee = cid;
+	DELETE FROM rents WHERE clientID = cid;
+	DELETE FROM bill WHERE clientID = cid;
+	DELETE FROM request WHERE clientID = cid;
+	DELETE FROM credit_card WHERE clientID = cid;
+	DELETE FROM client WHERE userID = cid;
+	DELETE FROM user WHERE userID = cid;
+END$$
+
+DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `setRents`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+CREATE PROCEDURE `setRents`(IN uid int, IN anum int, IN bname VARCHAR(45), IN sdate date, IN edate date)
+BEGIN
+	INSERT INTO rents
+    VALUES (uid, anum, bname, sdate, edate);
 END$$
 
 DELIMITER ;
