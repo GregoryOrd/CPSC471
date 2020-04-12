@@ -149,7 +149,7 @@ namespace CPSC471_RentalSystemAPI.Controllers
                 int result = dbModel.addEmployee(manager_id, emp_FirstName, emp_LastName, emp_password, emp_salary, house_number, street, city, province, postal_code, hire_date);
                 if (result > 0)
                 {
-                    retVal["success"] = false;
+                    retVal["success"] = true;
                     retVal["user_id"] = result;
                     return StatusCode(200, retVal);
                 }
