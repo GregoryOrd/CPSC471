@@ -474,3 +474,6 @@ INSERT INTO `cpsc471_rental_system`.`request` (requestID, clientID, description)
 INSERT INTO `cpsc471_rental_system`.`service` (toolID, building_name, technicianID, requestID, completed_date) VALUES (327, "Scranton apartment 2", 003, 001, '2020-07-04');
 INSERT INTO `cpsc471_rental_system`.`service` (toolID, building_name, technicianID, requestID, completed_date) VALUES (831, "Scranton apartment 1", 003, 002, '2020-06-25');
 INSERT INTO `cpsc471_rental_system`.`service` (toolID, building_name, technicianID, requestID, completed_date) VALUES (999, "Scranton apartment 2", 003, 003, '2020-03-01');
+
+INSERT INTO `cpsc471_rental_system`.`bill` (clientID, billID, payment_type, payment_date) VALUES (5, 1, null, null);
+INSERT INTO `cpsc471_rental_system`.`bill` (clientID, billID, payment_type, payment_date) VALUES (6, 2, null, null);
