@@ -1,4 +1,5 @@
-# CPSC MySQL Database API
+# SUPREME RENTAL SYSTEM
+### CPSC 471 MySQL Database API
 
 ## Team Members
 
