@@ -470,3 +470,19 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+USE `cpsc471_rental_system`;
+DROP procedure IF EXISTS `getRenter`;
+
+DELIMITER $$
+USE `cpsc471_rental_system`$$
+
+CREATE PROCEDURE `getRenter`(IN anum int, IN bname VARCHAR(45))
+BEGIN
+	SELECT clientID
+	FROM rents
+	WHERE rents.apartment_num = anum
+	AND rents.building_name = bname;
+END$$
+
+DELIMITER ;
