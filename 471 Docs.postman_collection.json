@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "012b0697-e8e3-42c4-b1c4-a3849a1da53a",
+		"_postman_id": "d93cbba9-306d-4260-b8e3-10822cd49add",
 		"name": "471 Docs",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -216,15 +216,6 @@
 					"originalRequest": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"employee_id\": 2,\n\t\"password\": \"nzxnvsd0\",\n\t\"buildings\": [\n\t\t\"Fake b1\",\n\t\t\"Scranton apartment 1\"\n\t]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "https://localhost:44322/api/landlord/listClients",
 							"protocol": "https",
@@ -270,6 +261,65 @@
 			]
 		},
 		{
+			"name": "getClient",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": [
+				{
+					"name": "getClient",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44322/api/landlord/getClient",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44322",
+							"path": [
+								"api",
+								"landlord",
+								"getClient"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "ASP.NET"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 12 Apr 2020 21:30:37 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"client\":{\n    \t\"userID\":13,\n    \t\"registration_date\":\"2020-01-04\",\n    \t\"contract_type\":\"2 year\"\n    }\n}"
+				}
+			]
+		},
+		{
 			"name": "getApartment",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -306,15 +356,6 @@
 					"originalRequest": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"employee_id\": 2,\n\t\"password\": \"nzxnvsd0\",\n\t\"building_name\": \"Scranton apartment 1\",\n\t\"apartment_num\": 421\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "https://localhost:44322/api/landlord/getApartment",
 							"protocol": "https",
@@ -396,15 +437,6 @@
 					"originalRequest": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"employee_id\": 2,\n\t\"password\": \"nzxnvsd0\",\n\t\"building_name\": \"Scranton apartment 1\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "https://localhost:44322/api/landlord/getBuilding",
 							"protocol": "https",
@@ -446,93 +478,6 @@
 					],
 					"cookie": [],
 					"body": "{\n    \"success\": true,\n    \"building\":{\n    \t\"building_name\":\"Scantron apartment 1\",\n    \t\"landlordID\":2,\n    \t\"property_manager_id\":4,\n    \t\"city\":\"Scantron\",\n    \t\"province\":\"Pennsylvania\",\n    \t\"postal_code\":\"T4K-0T1\",\n    \t\"street_address\":\"somewhere blvd\"\n    }\n}"
-				}
-			]
-		},
-		{
-			"name": "changePassword",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"user_id\":1,\n\t\"new_password\":\"dsaf8s9fhasf\",\n\t\"password\":\"New Password\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://localhost:44322/api/user/changePassword",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "44322",
-					"path": [
-						"api",
-						"user",
-						"changePassword"
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "changePassword",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"user_id\":1,\n\t\"new_password\":\"dsaf8s9fhasf\",\n\t\"password\":\"New Password\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://localhost:44322/api/user/changePassword",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "44322",
-							"path": [
-								"api",
-								"user",
-								"changePassword"
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Transfer-Encoding",
-							"value": "chunked"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json; charset=utf-8"
-						},
-						{
-							"key": "Server",
-							"value": "Kestrel"
-						},
-						{
-							"key": "X-Powered-By",
-							"value": "ASP.NET"
-						},
-						{
-							"key": "Date",
-							"value": "Sun, 12 Apr 2020 19:56:21 GMT"
-						}
-					],
-					"cookie": [],
-					"body": "{\n    \"success\": true\n}"
 				}
 			]
 		},
@@ -739,107 +684,6 @@
 			]
 		},
 		{
-			"name": "completeRequest",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"name": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n\t\"employee_id\":4,\r\n\t\"password\":\"dsaf8s9fhasf\",\r\n\t\"request_id\":1,\r\n\t\"building_name\":\"MyBuilding\",\r\n\t\"tool_id\":1,\r\n\t\"completion_date\":\"2020-04-09\"\r\n}\r\n\r\n\r\n\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://localhost:44322/api/technician/completeRequest",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "44322",
-					"path": [
-						"api",
-						"technician",
-						"completeRequest"
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "completeRequest",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\t\"employee_id\":4,\r\n\t\"password\":\"dsaf8s9fhasf\",\r\n\t\"request_id\":1,\r\n\t\"building_name\":\"MyBuilding\",\r\n\t\"tool_id\":1,\r\n\t\"completion_date\":\"2020-04-09\"\r\n}\r\n\r\n\r\n\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://localhost:44322/api/technician/completeRequest",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "44322",
-							"path": [
-								"api",
-								"technician",
-								"completeRequest"
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Transfer-Encoding",
-							"value": "chunked"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json; charset=utf-8"
-						},
-						{
-							"key": "Server",
-							"value": "Kestrel"
-						},
-						{
-							"key": "X-Powered-By",
-							"value": "ASP.NET"
-						},
-						{
-							"key": "Date",
-							"value": "Sun, 12 Apr 2020 20:08:25 GMT"
-						}
-					],
-					"cookie": [],
-					"body": "{\n    \"success\": true\n}"
-				}
-			]
-		},
-		{
 			"name": "submitRequest",
 			"request": {
 				"method": "PUT",
@@ -937,6 +781,107 @@
 					],
 					"cookie": [],
 					"body": "{\n    \"success\": true,\n    \"request_id\": 7\n}"
+				}
+			]
+		},
+		{
+			"name": "completeRequest",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"employee_id\":3,\r\n\t\"password\":\"sdf6923obw\",\r\n\t\"request_id\":4,\r\n\t\"building_name\":\"MyBuilding\",\r\n\t\"tool_id\":327,\r\n\t\"completion_date\":\"2020-04-09\"\r\n}\r\n\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:44322/api/technician/completeRequest",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44322",
+					"path": [
+						"api",
+						"technician",
+						"completeRequest"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "completeRequest",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"employee_id\":4,\r\n\t\"password\":\"dsaf8s9fhasf\",\r\n\t\"request_id\":1,\r\n\t\"building_name\":\"MyBuilding\",\r\n\t\"tool_id\":1,\r\n\t\"completion_date\":\"2020-04-09\"\r\n}\r\n\r\n\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44322/api/technician/completeRequest",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44322",
+							"path": [
+								"api",
+								"technician",
+								"completeRequest"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "ASP.NET"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 12 Apr 2020 20:08:25 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true\n}"
 				}
 			]
 		},
@@ -1042,23 +987,42 @@
 			]
 		},
 		{
-			"name": "getClient",
+			"name": "changePassword",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"user_id\":12,\n\t\"password\":\"sdyf2o3t2\",\n\t\"new_password\":\"New Password\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": ""
+					"raw": "https://localhost:44322/api/user/changePassword",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44322",
+					"path": [
+						"api",
+						"user",
+						"changePassword"
+					]
 				}
 			},
 			"response": [
 				{
-					"name": "getClient",
+					"name": "changePassword",
 					"originalRequest": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"employee_id\": 2,\n\t\"password\": \"nzxnvsd0\",\n\t\"client_id\": 13\n}",
+							"raw": "{\n\t\"user_id\":1,\n\t\"new_password\":\"dsaf8s9fhasf\",\n\t\"password\":\"New Password\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1066,7 +1030,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:44322/api/landlord/getClient",
+							"raw": "https://localhost:44322/api/user/changePassword",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -1074,8 +1038,8 @@
 							"port": "44322",
 							"path": [
 								"api",
-								"landlord",
-								"getClient"
+								"user",
+								"changePassword"
 							]
 						}
 					},
@@ -1101,11 +1065,11 @@
 						},
 						{
 							"key": "Date",
-							"value": "Sun, 12 Apr 2020 21:30:37 GMT"
+							"value": "Sun, 12 Apr 2020 19:56:21 GMT"
 						}
 					],
 					"cookie": [],
-					"body": "{\n    \"success\": true,\n    \"client\":{\n    \t\"userID\":13,\n    \t\"registration_date\":\"2020-01-04\",\n    \t\"contract_type\":\"2 year\"\n    }\n}"
+					"body": "{\n    \"success\": true\n}"
 				}
 			]
 		}
