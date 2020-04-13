@@ -99,7 +99,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"employee_id\": 2,\n\t\"password\": \"nzxnvsd0\",\n\t\"client_id\": 49\n}",
+					"raw": "{\n\t\"employee_id\": 2,\n\t\"password\": \"nzxnvsd0\",\n\t\"client_id\": 19\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -262,11 +262,33 @@
 		},
 		{
 			"name": "getClient",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"employee_id\": 2,\n\t\"password\": \"nzxnvsd0\",\n\t\"client_id\": 5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": ""
+					"raw": "https://localhost:44322/api/landlord/getClient",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44322",
+					"path": [
+						"api",
+						"landlord",
+						"getClient"
+					]
 				}
 			},
 			"response": [
