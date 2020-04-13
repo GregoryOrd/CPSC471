@@ -351,23 +351,23 @@ CREATE TABLE `cpsc471_rental_system`.`kitchen` (
     
 -- DATA INPUT    
 INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (001, 'Michael', 'Scott', 'dsaf8s9fhasf');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (002, 'Halpert', 'Jim', 'nzxnvsd0');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (003, 'Beesly', 'Pam', 'sdf6923obw');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (004, 'Schrute', 'Dwight', 'dsaf8s9fhasf');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (005, 'Martin', 'Angela', 'sf9sa6dfa9syf');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (006, 'Kapoor', 'Kelly', 'sfas8d0f1sc');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (007, 'Bond', 'James', 'sadf923nd1');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (008, 'Malone', 'Kevin', 's-uvs-vjsnd');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (009, 'Howard', 'Ryan', '898hgwf');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (010, 'Bernard', 'Andy', 'mdbf-e0');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (011, 'Hudson', 'Stanley', 'sfs0r3hp');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (012, 'Martinez', 'Oscar', 'sdyf2o3t2');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (013, 'Flenderson', 'Toby', 'ofywtiwf');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (014, 'Palmer', 'Meredith', 'sfd8uasro3u');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (015, 'Vance', 'Phyllis', 's-0dafm');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (016, 'Bratton', 'Creed', 'sefasf903nslf');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (017, 'Vance, Vance Refrigeration', 'Bob', 'xf90s8faf');
-INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (018, 'Flenderson', 'Sasha', 'hf43sf8faf');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (002, 'Jim', 'Halpert', 'nzxnvsd0');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (003, 'Pam', 'Beesly', 'sdf6923obw');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (004, 'Dwight', 'Schrute', 'dsaf8s9fhasf');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (005, 'Angela', 'Martin', 'sf9sa6dfa9syf');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (006, 'Kelly', 'Kapoor', 'sfas8d0f1sc');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (007, 'James', 'Bond', 'sadf923nd1');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (008, 'Kevin', 'Malone', 's-uvs-vjsnd');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (009, 'Ryan', 'Howard', '898hgwf');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (010, 'Andy', 'Bernard', 'mdbf-e0');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (011, 'Stanley', 'Hudson', 'sfs0r3hp');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (012, 'Oscar', 'Martinez', 'sdyf2o3t2');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (013, 'Toby', 'Flenderson', 'ofywtiwf');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (014, 'Meredith', 'Palmer', 'sfd8uasro3u');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (015, 'Phyllis', 'Vance', 's-0dafm');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (016, 'Creed', 'Bratton', 'sefasf903nslf');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (017, 'Bob', 'Vance, VanceRefrigeration', 'xf90s8faf');
+INSERT INTO `cpsc471_rental_system`.`user` (userId, first_name, last_name, password_hash) VALUES (018, 'Sasha', 'Flenderson', 'hf43sf8faf');
 
 INSERT INTO `cpsc471_rental_system`.`client` (userId, registration_date, contract_type ) VALUES (005, '2015-03-23', '2 year');  
 INSERT INTO `cpsc471_rental_system`.`client` (userId, registration_date, contract_type ) VALUES (006, '2018-11-11', '5 years');  
