@@ -174,6 +174,8 @@ BEGIN
     VALUES (fName, lName, pword);
 END$$
 
+DELIMITER ;
+
 USE `cpsc471_rental_system`;
 DROP procedure IF EXISTS `getUserID`;
 
