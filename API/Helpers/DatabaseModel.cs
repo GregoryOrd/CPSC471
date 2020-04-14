@@ -21,7 +21,7 @@ namespace CPSC471_RentalSystemAPI.Helpers
 
         #region Query Methods
 
-
+        //Get the connection string for the database connection
         public string Get_PuBConnectionString()
         {
             try
@@ -31,6 +31,7 @@ namespace CPSC471_RentalSystemAPI.Helpers
             catch { return null; }
         }
 
+        //Use the connection string to form a connection to the DB
         public MySqlConnection GetMySQLConnection()
         {
             if (Get_PuBConnectionString() == null)
@@ -199,12 +200,16 @@ namespace CPSC471_RentalSystemAPI.Helpers
 
         #region Execute Queries
 
+        //Calls the listClients stored procedure to return a DataTable of client data
         public DataTable listClients()
         {
             MySqlParameter[] Parameters = new MySqlParameter[0];
             return Execute_Data_Query_Store_Procedure("listClients", Parameters);
         }
 
+        //Takes in the id of a user and the new password.
+        //Calculates the new password hash, then calls the updatePassword stored procedure to update the password for the user.
+        //Returns 1 on success, -2 on failure.
         public int updatePassword(String user_id, String new_password)
         {
             MySqlParameter[] Parameters = new MySqlParameter[3];
@@ -215,8 +220,11 @@ namespace CPSC471_RentalSystemAPI.Helpers
             return Execute_Non_Query_Store_Procedure("updatePassword", Parameters);
         }
 
+        //Adds a building to the DB
         public int addBuilding(String building_name, String landlord_id, String property_manager_id, String city, String province, String postal_code, String street_address, List<Apartment> apartments, List<Amenity> amenities)
         {
+            //To complete this action, three stored procedures are called.
+            //This list stores the success/failure results of those stored procedures.
             List<int> results = new List<int>();
 
             //Add building
@@ -230,6 +238,8 @@ namespace CPSC471_RentalSystemAPI.Helpers
             Parameters[6] = new MySqlParameter("@street", street_address);
             Parameters[7] = new MySqlParameter("@result", 0);
             Parameters[7].Direction = ParameterDirection.Output;
+            
+            //Add success/failure result to results list
             results.Add(Execute_Non_Query_Store_Procedure("addBuilding", Parameters));
 
             //Add apartments to the building
@@ -241,6 +251,8 @@ namespace CPSC471_RentalSystemAPI.Helpers
                 Parameters[2] = new MySqlParameter("@nFloors", apartments[i].num_floors);
                 Parameters[3] = new MySqlParameter("@result", 0);
                 Parameters[3].Direction = ParameterDirection.Output;
+                
+                //Add success/failure result to the results list
                 results.Add(Execute_Non_Query_Store_Procedure("addApartment", Parameters));
             }
 
@@ -254,10 +266,15 @@ namespace CPSC471_RentalSystemAPI.Helpers
                 Parameters[3] = new MySqlParameter("@f", amenities[i].fees);
                 Parameters[4] = new MySqlParameter("@result", 0);
                 Parameters[4].Direction = ParameterDirection.Output;
+                //Add success/failure result to the results list
                 results.Add(Execute_Non_Query_Store_Procedure("addAmenity", Parameters));
             }
 
+            //If successful, all elements in results should have a value of 1.
+            //If any of the elements have a value of -2, return 0 to indicate failure.
             if (results.Contains(-2)) { return 0; }
+            
+            //Return 1 to indicate successful execution of all stored procedures.
             return 1;
         }
 
@@ -301,6 +318,9 @@ namespace CPSC471_RentalSystemAPI.Helpers
             }
         }
 
+        //Marks that a technicain has completed a service request in a given building, using a given tool, on a given date.
+        //Calls the completeRequest Stored Procedure.
+        //Returns 1 if successful, -2 if unsuccessful.
         public int completeRequest(String employee_id, String request_id, String building_name, String tool_id, DateTime completion_date)
         {
             MySqlParameter[] Parameters = new MySqlParameter[5];
@@ -313,13 +333,19 @@ namespace CPSC471_RentalSystemAPI.Helpers
             return result;
         }
 
-
+        //Submits a request for a client with a given id and request description.
+        //Returns the request id of the generated request.
+        //Returns -2 if there was an error.
         public int submitRequest(String client_id, String description)
         {
             MySqlParameter[] Parameters = new MySqlParameter[2];
             Parameters[0] = new MySqlParameter("@client_id", client_id);
             Parameters[1] = new MySqlParameter("@descript", description);
+            
+            //Call submit request to add the request to the DB
             int result = Execute_Non_Query_Store_Procedure("submitRequest", Parameters);
+            
+            //If the request is successfully added, call getRequestID to get the newly generated request id.
             if(result == 1)
             {
                 DataTable requestIDTable = Execute_Data_Query_Store_Procedure("getRequestID", Parameters);
@@ -329,6 +355,9 @@ namespace CPSC471_RentalSystemAPI.Helpers
             return result;
         }
 
+        //This function adds a bill payment to the database, and dates it with the current date.
+        //Returns 1 if the bill is successfully paid.
+        //Returns -2 if there is an error adding the payment to the DB.
         public int payBill(String client_id, String bill_id, String payment_type)
         {
             MySqlParameter[] Parameters = new MySqlParameter[4];
