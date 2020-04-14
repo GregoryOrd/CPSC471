@@ -7,6 +7,9 @@ namespace CPSC471_RentalSystemAPI.Models
 {
     public class Dependent
     {
+        //
+        // Parameters
+        //
 
         public int user_id { get; set; }
         public int client_dependee { get; set; }
@@ -15,6 +18,18 @@ namespace CPSC471_RentalSystemAPI.Models
         public String last_name { get; set; }
         public string password_hash { get; set; }
 
+        //
+        // Constructors
+        //
+
+        /// <summary>
+        /// Creates a partially completed dependant object.
+        /// This is because the request coming in doesn't have 100% of the required information.
+        /// </summary>
+        /// <param name="is_under_18">True if the dependant is uner 18 years old.</param>
+        /// <param name="first_name">The first name of the dependant.</param>
+        /// <param name="last_name">The last name of the dependant.</param>
+        /// <param name="password_hash">The password hash of the dependant.</param>
         public Dependent(bool is_under_18, String first_name, String last_name, String password_hash)
         {
             this.user_id = -1;
@@ -25,6 +40,15 @@ namespace CPSC471_RentalSystemAPI.Models
             this.password_hash = password_hash;
         }
 
+        /// <summary>
+        /// Creates a dependant object.
+        /// </summary>
+        /// <param name="user_id">The dependant's userID.</param>
+        /// <param name="client_dependee">The ID of their dependee client.</param>
+        /// <param name="is_under_18">True if the dependant is uner 18 years old.</param>
+        /// <param name="first_name">The first name of the dependant.</param>
+        /// <param name="last_name">The last name of the dependant.</param>
+        /// <param name="password_hash">The password hash of the dependant.</param>
         public Dependent(int user_id, int client_dependee, bool is_under_18,
             String first_name, String last_name, String password_hash)
         {
