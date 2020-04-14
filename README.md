@@ -1,4 +1,5 @@
-# CPSC MySQL Database API
+# SUPREME RENTAL SYSTEM
+### CPSC 471 MySQL Database API
 
 ## Team Members
 
@@ -33,4 +34,4 @@ Simply import `471 Docs - T05 Group 3.postman_collection.json` into Postman,
 and all of the endpoints will be displayed displayed with example info
 matching up with the test data provided in `CREATE_SCHEMA.sql`.
 
-[A simple talk-through demonstration of the API is available here.](https://youtu.be/-XViRa3ldv0)
+[A simple talk-through demonstration of the API is available here.](https://youtu.be/sbt1DwKDMrY)

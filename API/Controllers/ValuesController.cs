@@ -29,24 +29,35 @@ namespace CPSC471_RentalSystemAPI.Controllers
         [Microsoft.AspNetCore.Mvc.Route("user/changePassword")]
         public IActionResult changePassword([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            //Object to hold endpoint output parameters
             JObject retVal = new JObject();
+            
+            //Parse the input parameters
             String user_id = parameters["user_id"].ToString();
             String old_password = parameters["password"].ToString();
             String new_password = parameters["new_password"].ToString();
+            
+            //Authenticate the request
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(user_id), old_password, USER_TYPE.USER);
             if (authenticationResult == false)
             {
+                //If authentication fails, return success = false and 401 Unauthorzated Status Code
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
             else
             {
+                //Make call to database model to update password
                 int result = dbModel.updatePassword(user_id, new_password);
+                
+                //If successful, return success = true and 200 OK status code
                 if (result == 1)
                 {
                     retVal["success"] = true;
                     return StatusCode(200, retVal);
                 }
+                
+                //If database model returns a failure, return success = false and 500 Internal Server Error Status Code
                 else
                 {
                     retVal["success"] = false;
@@ -67,7 +78,10 @@ namespace CPSC471_RentalSystemAPI.Controllers
         [Microsoft.AspNetCore.Mvc.Route("propertyManager/addBuilding")]
         public IActionResult addBuilding([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            //Object to hold endpoint output parameters
             JObject retVal = new JObject();
+            
+            //Parse the string input parameters
             String property_manager_id = parameters["employee_id"].ToString();
             String password = parameters["password"].ToString();
             String building_name = parameters["building_name"].ToString();
@@ -76,35 +90,44 @@ namespace CPSC471_RentalSystemAPI.Controllers
             String province = parameters["province"].ToString();
             String postal_code = parameters["postal_code"].ToString();
             String street_address = parameters["street_address"].ToString();
+            
+            //List to hold data for apartments and amentities
             List<Apartment> apartments = null;
             List<Amenity> amenities = null;
 
+            //Parse the input data for the apartments array
             JArray apartmentsArray = parameters["apartments"] as JArray;
             if(apartmentsArray != null)
             {
                 apartments = apartmentsArray.Select(x => new Apartment((int)x["apartment_num"], building_name, (int)x["num_floors"])).ToList();
             }
 
+            //Parse the input data for the amenities array
             JArray amenitiesArray = parameters["amenities"] as JArray;
             if (amenitiesArray != null)
             {
                 amenities = amenitiesArray.Select(x => new Amenity((String)x["name"], building_name, (String)x["description"], (int)x["fees"])).ToList();
             }
 
+            //Authenticate the request
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(property_manager_id), password, USER_TYPE.PROPERTY_MANAGER);
             if (authenticationResult == false)
             {
+                //If authentication fails, return success = false and 401 Unauthorizes Status Code
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
             else
             {
+                //If authentication passes, call the databse model to add building
                 int result = dbModel.addBuilding(building_name, landlord_id, property_manager_id, city, province, postal_code, street_address, apartments, amenities);
                 if(result == 1)
                 {
+                    //If the database model call is successful, return success = true and 200 OK Status Code
                     retVal["success"] = true;
                     return StatusCode(200, retVal);
                 }
+                //If the database model call is unsuccessful, return success = false and 500 Internal Server Error Status Code
                 retVal["success"] = false;
                 return StatusCode(500, retVal);
             }
@@ -122,7 +145,10 @@ namespace CPSC471_RentalSystemAPI.Controllers
         [Microsoft.AspNetCore.Mvc.Route("districtManager/addEmployee")]
         public IActionResult addEmployee([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            //Object to hold the endpoint output parameters
             JObject retVal = new JObject();
+            
+            //Parse the input parameters
             String manager_id = parameters["manager_id"].ToString();
             String password = parameters["password"].ToString();
             String emp_FirstName = parameters["first_name"].ToString();
@@ -136,25 +162,28 @@ namespace CPSC471_RentalSystemAPI.Controllers
             String postal_code = parameters["postal_code"].ToString();
             DateTime hire_date = (DateTime)parameters["hire_date"];
 
-            String checkInputs = "Salary: " + emp_salary + " // HouseNumber: " + house_number.ToString() + " // hire_date: " + hire_date.ToString();
-
+            //Authenticate the request
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(manager_id), password, USER_TYPE.DISTRICT_MANAGER);
             if (authenticationResult == false)
             {
+                //If authentication fails, return success = false and 401 Unauthorizes Status Code
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
             else
             {
+                //If authentication passes, call database model to add employee
                 int result = dbModel.addEmployee(manager_id, emp_FirstName, emp_LastName, emp_password, emp_salary, house_number, street, city, province, postal_code, hire_date);
                 if (result > 0)
                 {
+                    //If database model is successfull, return success = true, the user id of the new employee, and 200 OK Status Code
                     retVal["success"] = true;
                     retVal["user_id"] = result;
                     return StatusCode(200, retVal);
                 }
                 else
                 {
+                    //If the database model is successfull, return success = false and 500 Internal Server Error Status Code
                     retVal["success"] = false;
                     return StatusCode(500, retVal);
                 }
@@ -173,7 +202,10 @@ namespace CPSC471_RentalSystemAPI.Controllers
         [Microsoft.AspNetCore.Mvc.Route("technician/completeRequest")]
         public IActionResult completeRequest([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            //Object to hold endpoint output parameters
             JObject retVal = new JObject();
+            
+            //Parse the input parameters
             String employee_id = parameters["employee_id"].ToString();
             String password = parameters["password"].ToString();
             String request_id = parameters["request_id"].ToString();
@@ -181,22 +213,27 @@ namespace CPSC471_RentalSystemAPI.Controllers
             String tool_id = parameters["tool_id"].ToString();
             DateTime completion_date = (DateTime)parameters["completion_date"];
 
+            //Authenticate the request
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.TECHNICIAN);
             if (authenticationResult == false)
             {
+                //If authentication fails, return success = false and 401 Unauthorized Status Code
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
             else
             {
+                //If authentication passes, call the database model to complete request
                 int result = dbModel.completeRequest(employee_id, request_id, building_name, tool_id, completion_date);
                 if (result > 0)
                 {
+                    //If databse model is successful, return true and 200 OK Status Code
                     retVal["success"] = true;
                     return StatusCode(200, retVal);
                 }
                 else
                 {
+                    //If database model is unsuccessful, return success = false and 501 Internal Server Error Status Code
                     retVal["success"] = false;
                     return StatusCode(500, retVal);
                 }
@@ -535,28 +572,34 @@ namespace CPSC471_RentalSystemAPI.Controllers
         [Microsoft.AspNetCore.Mvc.Route("client/submitRequest")]
         public IActionResult submitRequest([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            //Object to hold output endpoint output parameters
             JObject retVal = new JObject();
             String client_id = parameters["client_id"].ToString();
             String password = parameters["password"].ToString();
             String description = parameters["description"].ToString();
 
+            //Authenticate the request
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(client_id), password, USER_TYPE.CLIENT);
             if (authenticationResult == false)
             {
+                //If authentication fails, return success = false and 401 Unauthorized Status Code
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
             else
             {
+                //If authentication passes, call the database model to submit the request
                 int result = dbModel.submitRequest(client_id, description);
                 if (result > 0)
-                {
+                {   
+                    //If the database model is successful, return success = true, the generated request id, and 200 OK Status Code
                     retVal["success"] = true;
                     retVal["request_id"] = result;
                     return StatusCode(200, retVal);
                 }
                 else
                 {
+                    //If the database model is unsuccessful, return success = false and 500 Internal Server Error Status Code
                     retVal["success"] = false;
                     return StatusCode(500, retVal);
                 }
@@ -575,28 +618,36 @@ namespace CPSC471_RentalSystemAPI.Controllers
         [Microsoft.AspNetCore.Mvc.Route("client/payBill")]
         public IActionResult payBill([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            //Object to hold endpoint output parameters
             JObject retVal = new JObject();
+            
+            //Parse the input parameters
             String client_id = parameters["client_id"].ToString();
             String password = parameters["password"].ToString();
             String bill_id = parameters["bill_id"].ToString();
             String payment_type = parameters["payment_type"].ToString();
 
+            //Authenticate the request
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(client_id), password, USER_TYPE.CLIENT);
             if (authenticationResult == false)
             {
+                //If authentication fails, return success = false and 401 Unauthorized Status Code
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
             else
             {
+                //Call the database model to pay the bill
                 int result = dbModel.payBill(client_id, bill_id, payment_type);
                 if (result > 0)
                 {
+                    //If the database model is successful, return success = true and 200 OK Status Code
                     retVal["success"] = true;
                     return StatusCode(200, retVal);
                 }
                 else
                 {
+                    //If the database model is unsuccessful, return success = false and return 500 Internal Server Error Status Code
                     retVal["success"] = false;
                     return StatusCode(500, retVal);
                 }
