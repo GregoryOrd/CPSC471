@@ -8,31 +8,28 @@ namespace CPSC471_RentalSystemAPI.Models
 {
     public class Apartment
     {
+        //
+        // Parameters
+        //
         public int apartment_num { get; set; }
         public String building_name { get; set; }
         public int num_floors { get; set; }
 
+        //
+        // Constructors
+        //
+
+        /// <summary>
+        /// Constructs a basic apartment object.
+        /// </summary>
+        /// <param name="aNum">The apartment number.</param>
+        /// <param name="bName">The building name.</param>
+        /// <param name="nFloors">The number of floors inside the apartment.</param>
         public Apartment(int aNum, String bName, int nFloors)
         {
             apartment_num = aNum;
             building_name = bName;
             num_floors = nFloors;
         }
-
-        /*public Apartment()
-        {
-            apartment_num = -1;
-            building_name = "";
-            num_floors = -1;
-        }
-
-        public static implicit operator Apartment(JToken jApartment)
-        {
-            Apartment toReturn = new Apartment();
-            toReturn.apartment_num = (int)jApartment["apartment_num"];
-            toReturn.building_name = (String)jApartment["building_name"];
-            toReturn.num_floors = (int)jApartment["num_floors"];
-            return toReturn;
-        }*/
     }
 }

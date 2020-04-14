@@ -210,11 +210,17 @@ namespace CPSC471_RentalSystemAPI.Controllers
 
         #region PUT Requests
 
-        // PUT api/landlord/addClient
+        /// <summary>
+        /// PUT api/landlord/addClient
+        /// Used by a landlord to add a client to the database.
+        /// </summary>
+        /// <param name="parameters">The JSON body from the request</param>
+        /// <returns>Success bool, and the userID of the added client.</returns>
         [Microsoft.AspNetCore.Mvc.HttpPut]
         [Microsoft.AspNetCore.Mvc.Route("landlord/addClient")]
         public IActionResult addClient([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            // Get parameters
             String employee_id          = parameters["employee_id"].ToString();
             String password             = parameters["password"].ToString();
             String first_name           = parameters["first_name"].ToString();
@@ -226,6 +232,8 @@ namespace CPSC471_RentalSystemAPI.Controllers
             String building_name        = parameters["building_name"].ToString();
             DateTime start_date         = (DateTime) parameters["start_date"];
             DateTime end_date           = (DateTime) parameters["end_date"];
+
+            // Construct dependants
             List<Dependent> dependents  = new List<Dependent>();
             foreach (JObject d in parameters["dependents"])
             {
@@ -233,19 +241,27 @@ namespace CPSC471_RentalSystemAPI.Controllers
                     d["last_name"].ToString(), d["password"].ToString()));
             }
 
+            // Init a return value
             JObject retVal = new JObject();
 
+            // Authenticate the user
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
+                // Unauthorized
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
             else
             {
+                // Add the client to the database
                 int result = dbModel.addClient(first_name, last_name, client_password, contract_type, card_number,
                     dependents.ToArray(), apartment_num, building_name, start_date, end_date);
+
+                // Add the new ID to the return value
                 retVal["user_id"] = result;
+                
+                // Check for success and return the appropriate response
                 if (result > 0)
                 {
                     retVal["success"] = true;
@@ -262,27 +278,39 @@ namespace CPSC471_RentalSystemAPI.Controllers
         #endregion
 
         #region DELETE Requests
-        // No longer using the end_date parameter due to MySQL issues
-        // POST api/landlord/removeClient
+        /// <summary>
+        /// POST api/landlord/removeClient
+        /// Used by a landlord to remove a client from the database.
+        /// No longer using the end_date parameter due to MySQL issues.
+        /// </summary>
+        /// <param name="parameters">The JSON body from the request</param>
+        /// <returns>Success bool.</returns>
         [Microsoft.AspNetCore.Mvc.HttpDelete]
         [Microsoft.AspNetCore.Mvc.Route("landlord/removeClient")]
         public IActionResult removeClient([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            // Get parameters
             String employee_id  = parameters["employee_id"].ToString();
             String password     = parameters["password"].ToString();
             String client_id    = parameters["client_id"].ToString();
 
+            // Init a return value
             JObject retVal = new JObject();
 
+            // Authenticate the user
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
+                // Unauthorized
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
             else
             {
+                // remove the client from the database
                 int result = dbModel.removeClient(client_id);
+                
+                // Check for success and return the appropriate response
                 if (result > 0)
                 {
                     retVal["success"] = true;
@@ -298,16 +326,23 @@ namespace CPSC471_RentalSystemAPI.Controllers
         #endregion
 
         #region Get Requests
-        // Now just returns client IDs
-        // GET api/landlord/listClients
+        /// <summary>
+        /// GET api/landlord/listClients
+        /// Used by a landlord to list all of their clients.
+        /// Now just returns client IDs.
+        /// </summary>
+        /// <param name="parameters">The JSON body from the request</param>
+        /// <returns>Success bool, and a list of clientIDs.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet]
         [Microsoft.AspNetCore.Mvc.Route("landlord/listClients")]
         public IActionResult listClients([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            // Get parameters
             String employee_id      = parameters["employee_id"].ToString();
             String password         = parameters["password"].ToString();
-            List<String> buildings  = new List<String>();
 
+            // Construct a list of filter buildings
+            List<String> buildings  = new List<String>();
             if (parameters.ContainsKey("buildings"))
             {
                 foreach (String b in parameters["buildings"])
@@ -316,17 +351,23 @@ namespace CPSC471_RentalSystemAPI.Controllers
                 }
             }
 
+            // Init a return value
             JObject retVal = new JObject();
 
+            // Authenticate the user
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
+                // Unauthorized
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
             else
             {
+                // Get the list of clientIDs
                 JArray result = dbModel.listClients(employee_id, buildings.ToArray());
+                
+                // Check for success and return the appropriate response
                 if (result != null)
                 {
                     retVal["success"] = true;
@@ -341,27 +382,39 @@ namespace CPSC471_RentalSystemAPI.Controllers
             }
         }
 
-        // GET api/landlord/getApartment
+        /// <summary>
+        /// GET api/landlord/getApartment
+        /// Used by a landlord to get information about an apartment.
+        /// </summary>
+        /// <param name="parameters">The JSON body from the request</param>
+        /// <returns>Success bool, and a JSON object representing the requested apartment.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet]
         [Microsoft.AspNetCore.Mvc.Route("landlord/getApartment")]
         public IActionResult getApartment([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            // Get parameters
             String employee_id      = parameters["employee_id"].ToString();
             String password         = parameters["password"].ToString();
             String building_name    = parameters["building_name"].ToString();
             int apartment_num       = (int) parameters["apartment_num"];
 
+            // Init a return value
             JObject retVal = new JObject();
 
+            // Authenticate the user
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
+                // Unauthorized
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
             else
             {
+                // Get the apartment information
                 JObject result = dbModel.getApartment(building_name, apartment_num);
+                
+                // Check for success and return the appropriate response
                 if (result != null)
                 {
                     retVal["success"] = true;
@@ -376,26 +429,39 @@ namespace CPSC471_RentalSystemAPI.Controllers
             }
         }
 
-        // GET api/landlord/getBuilding
+        /// <summary>
+        /// GET api/landlord/getBuilding
+        /// Used by a landlord to get information about a building.
+        /// </summary>
+        /// <param name="parameters">The JSON body from the request</param>
+        /// <returns>Success bool, and a JSON object representing the requested building,
+        /// including an array of contained apartments.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet]
         [Microsoft.AspNetCore.Mvc.Route("landlord/getBuilding")]
         public IActionResult getBuilding([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            // Get parameters
             String employee_id      = parameters["employee_id"].ToString();
             String password         = parameters["password"].ToString();
             String building_name    = parameters["building_name"].ToString();
 
+            // Init a return value
             JObject retVal = new JObject();
 
+            // Authenticate the user
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
+                // Unauthorized
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
             else
             {
+                // Get the building information
                 JObject result = dbModel.getBuilding(building_name);
+                
+                // Check for success and return the appropriate response
                 if (result != null)
                 {
                     retVal["success"] = true;
@@ -410,26 +476,38 @@ namespace CPSC471_RentalSystemAPI.Controllers
             }
         }
 
-        // GET api/landlord/getClient
+        /// <summary>
+        /// GET api/landlord/getClient
+        /// Used by a landlord to get information about a client.
+        /// </summary>
+        /// <param name="parameters">The JSON body from the request</param>
+        /// <returns>Success bool, and a JSON object representing the requested client.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet]
         [Microsoft.AspNetCore.Mvc.Route("landlord/getClient")]
         public IActionResult getClient([Microsoft.AspNetCore.Mvc.FromBody] JObject parameters)
         {
+            // Get parameters
             String employee_id  = parameters["employee_id"].ToString();
             String password     = parameters["password"].ToString();
             String client_id    = parameters["client_id"].ToString();
 
+            // Init a return value
             JObject retVal = new JObject();
 
+            // Authenticate the user
             Boolean authenticationResult = Authentication.checkAuthentication(Int32.Parse(employee_id), password, USER_TYPE.LANDLORD);
             if (authenticationResult == false)
             {
+                // Unauthorized
                 retVal["success"] = false;
                 return StatusCode(401, retVal);
             }
             else
             {
+                // Get the client information
                 JObject result = dbModel.getClient(client_id);
+                
+                // Check for success and return the appropriate response
                 if (result != null)
                 {
                     retVal["success"] = true;
